@@ -15,13 +15,32 @@ const profiles = [
   { platform: "YouTube", handle: "@al-jannahcentre5619", href: "https://www.youtube.com/@al-jannahcentre5619", icon: Play },
 ];
 
-const updates = [
-  { title: "A place of love, care and inclusion", detail: "A public photo update from the Centre.", date: "November 2025", platform: "Facebook", href: "https://www.facebook.com/aljannahcentre/photos/1216389243869567/" },
-  { title: "A day out at Lotus Tower", detail: "A public outing update shared by the Centre.", date: "Official post", platform: "Facebook", href: "https://www.facebook.com/aljannahcentre/posts/the-children-of-al-jannah-centre-for-special-need-children-has-enjoyed-an-exciti/1261612042680620/" },
-  { title: "Children’s Day celebration", detail: "Performances, art, games and gifts.", date: "2 October 2025", platform: "Facebook", href: "https://www.facebook.com/aljannahcentre/posts/childrens-day-celebration-2025-al-jannah-centre-for-special-needs-children-toget/1181555450686280/" },
-  { title: "Celebrating a learner achievement", detail: "A public milestone shared by the Centre.", date: "Official post", platform: "Facebook", href: "https://www.facebook.com/aljannahcentre/photos/1284320707076420/" },
-  { title: "Preparing for the Grade 5 Scholarship", detail: "A public classroom update shared by the Centre.", date: "August 2026", platform: "Facebook", href: "https://www.facebook.com/aljannahcentre/photos/1432464135595409/" },
-  { title: "Celebrating our young achievers", detail: "An official Instagram update from Al-Jannah Centre.", date: "2 September 2026", platform: "Instagram", href: "https://www.instagram.com/p/DdMYX5tt63-/" },
+const facebookEmbed = (href: string) =>
+  "https://www.facebook.com/plugins/post.php?href=" +
+  encodeURIComponent(href) +
+  "&show_text=false&width=500";
+
+const socialVisuals = [
+  {
+    title: "42nd National Meelad announcement",
+    platform: "Facebook",
+    href: "https://www.facebook.com/aljannahcentre/posts/al-jannah-centre-is-coming-were-pleased-to-announce-our-participation-in-the-42n/1444264511082038/",
+  },
+  {
+    title: "Meelad Exhibition directions",
+    platform: "Facebook",
+    href: "https://www.facebook.com/aljannahcentre/posts/-finding-al-jannah-is-now-easierheading-to-stalls-no-16-17-follow-our-direction-/1445772060931283/",
+  },
+  {
+    title: "National Meelad photo collection",
+    platform: "Facebook",
+    href: "https://www.facebook.com/aljannahcentre/posts/-42nd-national-meelad-un-nabi-exhibition-photo-collection-03behind-every-picture/1452095086965647/",
+  },
+  {
+    title: "Official National Meelad invitation",
+    platform: "Facebook",
+    href: "https://www.facebook.com/aljannahcentre/posts/we-are-honoured-to-share-that-al-jannah-centre-for-special-needs-children-has-re/1447499297425226/",
+  },
 ];
 
 const accounts = [
@@ -30,7 +49,11 @@ const accounts = [
 ];
 
 function BrandMark() {
-  return <span className="brand-mark" aria-hidden="true"><span>A</span><span>J</span></span>;
+  return (
+    <span className="brand-logo" aria-hidden="true">
+      <img src="/al-jannah-support-poster.png" alt="" />
+    </span>
+  );
 }
 
 export default function Home() {
@@ -110,15 +133,26 @@ export default function Home() {
       <section className="public-updates" id="updates" aria-labelledby="updates-title">
         <div className="section-top">
           <div><p className="kicker">From the official feed</p><h2 id="updates-title">Public moments and milestones</h2></div>
-          <p>These links open the original posts. The site does not copy children’s photos, helping the Centre keep control of images and privacy.</p>
+          <p>Selected images are embedded directly from Al-Jannah Centre’s official social accounts, with a link to each original post.</p>
         </div>
-        <div className="updates-grid">
-          {updates.map((update, index) => (
-            <a className="update-card" href={update.href} key={update.href} target="_blank" rel="noreferrer">
-              <span className="update-number">0{index + 1}</span><span className="platform-tag">{update.platform}</span>
-              <h3>{update.title}</h3><p>{update.detail}</p>
-              <span className="update-link">{update.date} <ArrowUpRight size={16} /></span>
-            </a>
+        <div className="social-gallery">
+          {socialVisuals.map((visual) => (
+            <article className="social-embed" key={visual.href}>
+              <div className="embed-meta">
+                <span>{visual.platform}</span>
+                <strong>{visual.title}</strong>
+              </div>
+              <iframe
+                src={facebookEmbed(visual.href)}
+                title={visual.platform + ": " + visual.title}
+                loading="lazy"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allow="encrypted-media; picture-in-picture; web-share"
+              />
+              <a href={visual.href} target="_blank" rel="noreferrer">
+                View original post <ArrowUpRight size={16} />
+              </a>
+            </article>
           ))}
         </div>
       </section>
