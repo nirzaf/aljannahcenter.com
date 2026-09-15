@@ -4,7 +4,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Al-Jannah Centre | Kochchikade, Negombo",
   description:
-    "Al-Jannah Centre for children with special needs and skills in Kochchikade, Negombo.",
+    "Al-Jannah Centre for children with special needs and skills in Kochchikade, Negombo, with official public updates and photo gallery.",
   other: {
     "codex-preview": "development",
   },

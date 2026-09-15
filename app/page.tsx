@@ -8,6 +8,7 @@ import {
   Phone,
   Play,
 } from "lucide-react";
+import { LocalGallery } from "../components/local-gallery";
 
 const profiles = [
   { platform: "Facebook", handle: "Al - Jannah Centre", href: "https://www.facebook.com/aljannahcentre/", mark: "f" },
@@ -65,7 +66,7 @@ export default function Home() {
           <span><strong>Al-Jannah</strong><small>Centre</small></span>
         </a>
         <nav aria-label="Primary navigation">
-          <a href="#about">About</a><a href="#updates">Updates</a>
+          <a href="#about">About</a><a href="#updates">Updates</a><a href="#gallery">Gallery</a>
           <a href="#support">Support</a><a href="#contact">Contact</a>
         </nav>
         <a className="header-cta" href="#support">Support the Centre <ArrowRight size={16} /></a>
@@ -156,6 +157,8 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      <LocalGallery />
 
       <section className="support" id="support" aria-labelledby="support-title">
         <div>
