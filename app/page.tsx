@@ -9,39 +9,12 @@ import {
   Play,
 } from "lucide-react";
 import { LocalGallery } from "../components/local-gallery";
+import { InstagramGallery } from "../components/instagram-gallery";
 
 const profiles = [
   { platform: "Facebook", handle: "Al - Jannah Centre", href: "https://www.facebook.com/aljannahcentre/", mark: "f" },
   { platform: "Instagram", handle: "@aljannahcentre", href: "https://www.instagram.com/aljannahcentre/", mark: "◎" },
   { platform: "YouTube", handle: "@al-jannahcentre5619", href: "https://www.youtube.com/@al-jannahcentre5619", icon: Play },
-];
-
-const facebookEmbed = (href: string) =>
-  "https://www.facebook.com/plugins/post.php?href=" +
-  encodeURIComponent(href) +
-  "&show_text=false&width=500";
-
-const socialVisuals = [
-  {
-    title: "42nd National Meelad announcement",
-    platform: "Facebook",
-    href: "https://www.facebook.com/aljannahcentre/posts/al-jannah-centre-is-coming-were-pleased-to-announce-our-participation-in-the-42n/1444264511082038/",
-  },
-  {
-    title: "Meelad Exhibition directions",
-    platform: "Facebook",
-    href: "https://www.facebook.com/aljannahcentre/posts/-finding-al-jannah-is-now-easierheading-to-stalls-no-16-17-follow-our-direction-/1445772060931283/",
-  },
-  {
-    title: "National Meelad photo collection",
-    platform: "Facebook",
-    href: "https://www.facebook.com/aljannahcentre/posts/-42nd-national-meelad-un-nabi-exhibition-photo-collection-03behind-every-picture/1452095086965647/",
-  },
-  {
-    title: "Official National Meelad invitation",
-    platform: "Facebook",
-    href: "https://www.facebook.com/aljannahcentre/posts/we-are-honoured-to-share-that-al-jannah-centre-for-special-needs-children-has-re/1447499297425226/",
-  },
 ];
 
 const accounts = [
@@ -66,7 +39,7 @@ export default function Home() {
           <span><strong>Al-Jannah</strong><small>Centre</small></span>
         </a>
         <nav aria-label="Primary navigation">
-          <a href="#about">About</a><a href="#updates">Updates</a><a href="#gallery">Gallery</a>
+          <a href="#about">About</a><a href="#gallery">Gallery</a>
           <a href="#support">Support</a><a href="#contact">Contact</a>
         </nav>
         <a className="header-cta" href="#support">Support the Centre <ArrowRight size={16} /></a>
@@ -82,7 +55,7 @@ export default function Home() {
           </p>
           <div className="hero-actions">
             <a className="button button-primary" href="#contact">Contact the Centre <ArrowRight size={18} /></a>
-            <a className="button button-light" href="#updates">See public updates <ArrowUpRight size={17} /></a>
+            <a className="button button-light" href="#gallery">View photo gallery <ArrowUpRight size={17} /></a>
           </div>
           <div className="hero-points">
             <p><HeartHandshake size={18} /> Give hope. <strong>Change a life.</strong></p>
@@ -131,34 +104,8 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="public-updates" id="updates" aria-labelledby="updates-title">
-        <div className="section-top">
-          <div><p className="kicker">From the official feed</p><h2 id="updates-title">Public moments and milestones</h2></div>
-          <p>Selected images are embedded directly from Al-Jannah Centre’s official social accounts, with a link to each original post.</p>
-        </div>
-        <div className="social-gallery">
-          {socialVisuals.map((visual) => (
-            <article className="social-embed" key={visual.href}>
-              <div className="embed-meta">
-                <span>{visual.platform}</span>
-                <strong>{visual.title}</strong>
-              </div>
-              <iframe
-                src={facebookEmbed(visual.href)}
-                title={visual.platform + ": " + visual.title}
-                loading="lazy"
-                referrerPolicy="strict-origin-when-cross-origin"
-                allow="encrypted-media; picture-in-picture; web-share"
-              />
-              <a href={visual.href} target="_blank" rel="noreferrer">
-                View original post <ArrowUpRight size={16} />
-              </a>
-            </article>
-          ))}
-        </div>
-      </section>
-
       <LocalGallery />
+      <InstagramGallery />
 
       <section className="support" id="support" aria-labelledby="support-title">
         <div>
