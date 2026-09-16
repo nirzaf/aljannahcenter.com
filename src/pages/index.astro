@@ -3,6 +3,7 @@ import { getEmDashCollection } from "emdash";
 import { ArrowRight, ArrowUpRight, HeartHandshake, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import { InstagramGallery } from "../../components/instagram-gallery";
 import { LocalGallery } from "../../components/local-gallery";
+import SocialHighlights from "../components/SocialHighlights.astro";
 import PostCard from "../components/PostCard.astro";
 import Base from "../layouts/Base.astro";
 
@@ -125,6 +126,7 @@ if (Astro.cache?.enabled && cacheHint) Astro.cache.set(cacheHint);
 
   <LocalGallery client:visible />
   <InstagramGallery client:visible />
+  <SocialHighlights />
 
   <section class="support" id="support" aria-labelledby="support-title">
     <div>

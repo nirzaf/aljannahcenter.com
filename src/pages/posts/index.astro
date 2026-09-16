@@ -27,6 +27,10 @@ if (Astro.cache?.enabled && cacheHint) Astro.cache.set(cacheHint);
       <p class="kicker">From the Centre</p>
       <h1>Articles &amp; updates</h1>
       <p>Stories, announcements and celebrations published by the Al-Jannah Centre team.</p>
+      <div class="cms-archive-tools">
+        <a class="button button-primary" href="/_emdash/admin">Publish an update</a>
+        <a class="text-link" href="/updates">See the publishing rhythm <span aria-hidden="true">→</span></a>
+      </div>
     </header>
 
     {posts.length > 0 ? (

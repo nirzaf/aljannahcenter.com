@@ -1,0 +1,69 @@
+---
+import { ArrowUpRight, Camera } from "lucide-react";
+
+const highlights = [
+  {
+    platform: "Facebook",
+    label: "Latest public highlight",
+    title: "Rooted in compassion, growing in excellence.",
+    description: "The official page’s 8th-anniversary celebration brings together the children, families and supporters who make the Centre special.",
+    image: "/social/facebook-anniversary-2026.jpg",
+    alt: "Al-Jannah Centre 8th anniversary celebration graphic with children and families",
+    href: "https://www.facebook.com/aljannahcentre/",
+    source: "Official Facebook page",
+    width: 960,
+    height: 440,
+  },
+  {
+    platform: "Instagram",
+    label: "From the feed",
+    title: "La Madrassah Al Jannah",
+    description: "A public Instagram post featuring Dali Misha Touré and the Centre’s message that Al-Jannah is more than a madrassah: it is a place of life.",
+    image: "/social/instagram-madrassah-dali-misha.jpg",
+    alt: "La Madrassah Al Jannah graphic from the official Al-Jannah Centre Instagram post",
+    href: "https://www.instagram.com/p/CyTK17koyoX/",
+    source: "Official Instagram post",
+    width: 640,
+    height: 640,
+  },
+  {
+    platform: "YouTube",
+    label: "Official channel",
+    title: "Ready for future video updates",
+    description: "The official channel is linked here for future programme videos and announcements. No public uploads are currently visible on the channel.",
+    image: "/social/youtube-channel-artwork.jpg",
+    alt: "Official Al-Jannah Centre YouTube channel artwork",
+    href: "https://www.youtube.com/@al-jannahcentre5619",
+    source: "Official YouTube channel",
+    width: 160,
+    height: 160,
+  },
+];
+---
+
+<section class="social-highlights" aria-labelledby="social-highlights-title">
+  <div class="social-highlights-heading">
+    <div>
+      <p class="kicker">Public highlights</p>
+      <h2 id="social-highlights-title">More moments from our channels</h2>
+    </div>
+    <p>Curated public media from the Centre’s official Facebook, Instagram and YouTube accounts, with every image linked back to its source.</p>
+  </div>
+
+  <div class="social-highlight-grid">
+    {highlights.map((highlight) => (
+      <article class="social-highlight-card">
+        <a class="social-highlight-media" href={highlight.href} target="_blank" rel="noreferrer" aria-label={"Open " + highlight.platform + " source: " + highlight.title}>
+          <img src={highlight.image} alt={highlight.alt} width={highlight.width} height={highlight.height} loading="lazy" decoding="async" />
+          <span class="social-highlight-badge"><Camera size={14} /> {highlight.platform}</span>
+        </a>
+        <div class="social-highlight-copy">
+          <p class="social-highlight-label">{highlight.label}</p>
+          <h3>{highlight.title}</h3>
+          <p>{highlight.description}</p>
+          <a class="text-link" href={highlight.href} target="_blank" rel="noreferrer">{highlight.source} <ArrowUpRight size={16} /></a>
+        </div>
+      </article>
+    ))}
+  </div>
+</section>

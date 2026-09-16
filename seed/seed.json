@@ -104,7 +104,7 @@
       "items": [
         { "type": "custom", "label": "Home", "url": "/" },
         { "type": "custom", "label": "About", "url": "/pages/about" },
-        { "type": "custom", "label": "Articles", "url": "/posts" },
+        { "type": "custom", "label": "Updates", "url": "/updates" },
         { "type": "custom", "label": "Gallery", "url": "/#gallery" },
         { "type": "custom", "label": "Support", "url": "/#support" }
       ]
