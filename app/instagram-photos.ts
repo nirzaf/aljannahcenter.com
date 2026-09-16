@@ -26,15 +26,9 @@ const carouselPosts: CarouselPost[] = [
 
 const reelCovers: InstagramPhoto[] = [
   {
-    id: "DdN4HkiIgAW",
-    src: imagePath(1),
-    alt: "Al-Jannah Centre Instagram reel cover",
-    postUrl: "https://www.instagram.com/reel/DdN4HkiIgAW/",
-  },
-  {
     id: "DdLgN7IJRfa",
     src: imagePath(2),
-    alt: "Al-Jannah Centre Instagram reel cover",
+    alt: "Al-Jannah Centre distinguished guests Instagram reel cover",
     postUrl: "https://www.instagram.com/reel/DdLgN7IJRfa/",
   },
 ];
