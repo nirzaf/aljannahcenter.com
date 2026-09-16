@@ -1,0 +1,29 @@
+---
+import { decodeSlug, getEmDashEntry } from "emdash";
+import { PortableText } from "emdash/ui";
+import Base from "../../layouts/Base.astro";
+
+const slug = Astro.params.slug ? decodeSlug(Astro.params.slug) : null;
+if (!slug) return Astro.redirect("/404");
+
+const { entry: page, cacheHint } = await getEmDashEntry("pages", slug);
+if (!page) return Astro.redirect("/404");
+if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
+---
+
+<Base
+  title={page.data.title}
+  description="Learn more about Al-Jannah Centre."
+  content={{ collection: "pages", id: page.data.id, slug }}
+>
+  <article class="cms-page-article">
+    <a class="cms-back-link" href="/">← Back to the Centre</a>
+    <header class="cms-page-heading">
+      <p class="kicker">The Centre</p>
+      <h1>{page.data.title}</h1>
+    </header>
+    <div class="cms-page-content">
+      <PortableText value={page.data.content ?? []} />
+    </div>
+  </article>
+</Base>

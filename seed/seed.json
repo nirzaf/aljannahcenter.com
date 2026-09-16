@@ -1,0 +1,176 @@
+{
+  "$schema": "https://emdashcms.com/seed.schema.json",
+  "version": "1",
+  "meta": {
+    "name": "Al-Jannah Centre",
+    "description": "Public articles, updates and pages for Al-Jannah Centre.",
+    "author": "Al-Jannah Centre"
+  },
+  "settings": {
+    "title": "Al-Jannah Centre",
+    "tagline": "A place where every child can shine."
+  },
+  "collections": [
+    {
+      "slug": "posts",
+      "label": "Articles & Posts",
+      "labelSingular": "Article",
+      "supports": ["drafts", "revisions", "search", "seo"],
+      "fields": [
+        {
+          "slug": "title",
+          "label": "Title",
+          "type": "string",
+          "required": true,
+          "searchable": true
+        },
+        {
+          "slug": "featured_image",
+          "label": "Featured image",
+          "type": "image"
+        },
+        {
+          "slug": "excerpt",
+          "label": "Short summary",
+          "type": "text"
+        },
+        {
+          "slug": "content",
+          "label": "Article content",
+          "type": "portableText",
+          "searchable": true
+        }
+      ]
+    },
+    {
+      "slug": "pages",
+      "label": "Pages",
+      "labelSingular": "Page",
+      "supports": ["drafts", "revisions", "search", "seo"],
+      "fields": [
+        {
+          "slug": "title",
+          "label": "Title",
+          "type": "string",
+          "required": true,
+          "searchable": true
+        },
+        {
+          "slug": "content",
+          "label": "Page content",
+          "type": "portableText",
+          "searchable": true
+        }
+      ]
+    }
+  ],
+  "taxonomies": [
+    {
+      "name": "category",
+      "label": "Categories",
+      "labelSingular": "Category",
+      "hierarchical": true,
+      "collections": ["posts"],
+      "terms": [
+        { "slug": "centre-updates", "label": "Centre updates" },
+        { "slug": "community", "label": "Community" },
+        { "slug": "achievements", "label": "Achievements" }
+      ]
+    },
+    {
+      "name": "tag",
+      "label": "Tags",
+      "labelSingular": "Tag",
+      "hierarchical": false,
+      "collections": ["posts"],
+      "terms": [
+        { "slug": "al-jannah-centre", "label": "Al-Jannah Centre" },
+        { "slug": "children", "label": "Children" },
+        { "slug": "skills", "label": "Skills" }
+      ]
+    }
+  ],
+  "bylines": [
+    {
+      "id": "centre-editorial",
+      "slug": "centre-editorial",
+      "displayName": "Al-Jannah Centre"
+    }
+  ],
+  "menus": [
+    {
+      "name": "primary",
+      "label": "Primary navigation",
+      "items": [
+        { "type": "custom", "label": "Home", "url": "/" },
+        { "type": "custom", "label": "About", "url": "/pages/about" },
+        { "type": "custom", "label": "Articles", "url": "/posts" },
+        { "type": "custom", "label": "Gallery", "url": "/#gallery" },
+        { "type": "custom", "label": "Support", "url": "/#support" }
+      ]
+    },
+    {
+      "name": "social",
+      "label": "Social channels",
+      "items": [
+        {
+          "type": "custom",
+          "label": "Facebook",
+          "url": "https://www.facebook.com/aljannahcentre/",
+          "target": "_blank"
+        },
+        {
+          "type": "custom",
+          "label": "Instagram",
+          "url": "https://www.instagram.com/aljannahcentre/",
+          "target": "_blank"
+        },
+        {
+          "type": "custom",
+          "label": "YouTube",
+          "url": "https://www.youtube.com/@al-jannahcentre5619",
+          "target": "_blank"
+        }
+      ]
+    }
+  ],
+  "content": {
+    "pages": [
+      {
+        "id": "about",
+        "slug": "about",
+        "status": "published",
+        "data": {
+          "title": "About Al-Jannah Centre",
+          "content": [
+            {
+              "_type": "block",
+              "style": "normal",
+              "children": [
+                {
+                  "_type": "span",
+                  "text": "Al-Jannah Centre welcomes children with special needs and skills. The Centre publicly describes its work across education, therapy and vocational training.",
+                  "_key": "about-1"
+                }
+              ],
+              "_key": "about-block-1"
+            },
+            {
+              "_type": "block",
+              "style": "normal",
+              "children": [
+                {
+                  "_type": "span",
+                  "text": "For programme, admission and visit enquiries, please contact the Centre directly.",
+                  "_key": "about-2"
+                }
+              ],
+              "_key": "about-block-2"
+            }
+          ]
+        }
+      }
+    ],
+    "posts": []
+  }
+}

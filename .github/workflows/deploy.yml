@@ -55,7 +55,7 @@ jobs:
 
       - name: Verify deployment artifact
         run: |
-          test -f dist/server/index.js
+          test -f dist/server/entry.mjs
           test -f dist/server/wrangler.json
           test -d dist/client
 
@@ -75,5 +75,5 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ env.CLOUDFLARE_ACCOUNT_ID }}
-          wranglerVersion: "4.92.0"
+          wranglerVersion: "4.132.0"
           command: deploy --config dist/server/wrangler.json --name ${{ env.CLOUDFLARE_WORKER_NAME }}

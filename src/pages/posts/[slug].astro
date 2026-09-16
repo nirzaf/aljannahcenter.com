@@ -1,0 +1,64 @@
+---
+import { decodeSlug, getEmDashEntry } from "emdash";
+import { Image, PortableText } from "emdash/ui";
+import Base from "../../layouts/Base.astro";
+import { getReadingTime } from "../../utils/reading-time";
+
+const slug = Astro.params.slug ? decodeSlug(Astro.params.slug) : null;
+if (!slug) return Astro.redirect("/404");
+
+const { entry: post, cacheHint } = await getEmDashEntry("posts", slug);
+if (!post) return Astro.redirect("/404");
+if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
+
+const publishedTime = post.data.publishedAt?.toISOString() ?? null;
+const author = (post.data.bylines ?? [])
+  .map((credit) => credit.byline.displayName)
+  .join(", ") || null;
+const readingTime = getReadingTime(post.data.content);
+---
+
+<Base
+  title={post.data.title}
+  description={post.data.excerpt}
+  type="article"
+  publishedTime={publishedTime}
+  modifiedTime={post.data.updatedAt?.toISOString() ?? null}
+  author={author}
+  content={{ collection: "posts", id: post.data.id, slug }}
+>
+  <article class="cms-article">
+    <a class="cms-back-link" href="/posts">← All articles</a>
+    <header class="cms-article-header">
+      <p class="kicker">Al-Jannah Centre · Article</p>
+      <h1>{post.data.title}</h1>
+      <div class="cms-article-meta">
+        {author && <span>{author}</span>}
+        {post.data.publishedAt && (
+          <>
+            <span class="cms-meta-dot" />
+            <time datetime={publishedTime ?? undefined}>
+              {post.data.publishedAt.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
+            </time>
+          </>
+        )}
+        <span class="cms-meta-dot" /><span>{readingTime} min read</span>
+      </div>
+      {post.data.excerpt && <p class="cms-article-excerpt">{post.data.excerpt}</p>}
+    </header>
+
+    {post.data.featured_image && (
+      <div class="cms-article-image"><Image image={post.data.featured_image} /></div>
+    )}
+
+    <div class="cms-article-layout">
+      <aside class="cms-article-aside">
+        <a href="/#support">Support the Centre</a>
+        <a href="/#contact">Contact the Centre</a>
+      </aside>
+      <div class="cms-article-content">
+        <PortableText value={post.data.content ?? []} />
+      </div>
+    </div>
+  </article>
+</Base>

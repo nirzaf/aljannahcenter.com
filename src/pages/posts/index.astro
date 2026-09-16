@@ -1,0 +1,57 @@
+---
+import { getEmDashCollection } from "emdash";
+import Base from "../../layouts/Base.astro";
+import PostCard from "../../components/PostCard.astro";
+
+let posts: any[] = [];
+let cacheHint: unknown;
+try {
+  const result = await getEmDashCollection("posts", {
+    orderBy: { published_at: "desc" },
+    limit: 100,
+  });
+  posts = result.entries;
+  cacheHint = result.cacheHint;
+} catch {
+  // The archive can show its empty state while the CMS database is initialized.
+}
+if (Astro.cache?.enabled && cacheHint) Astro.cache.set(cacheHint);
+---
+
+<Base
+  title="Articles & updates"
+  description="Articles, announcements and updates from Al-Jannah Centre."
+>
+  <section class="cms-archive">
+    <header class="cms-archive-heading">
+      <p class="kicker">From the Centre</p>
+      <h1>Articles &amp; updates</h1>
+      <p>Stories, announcements and celebrations published by the Al-Jannah Centre team.</p>
+    </header>
+
+    {posts.length > 0 ? (
+      <div class="cms-post-grid cms-post-grid-archive">
+        {posts.map((post) => (
+          <PostCard
+            title={post.data.title}
+            excerpt={post.data.excerpt}
+            content={post.data.content}
+            featuredImage={post.data.featured_image}
+            href={"/posts/" + post.id}
+            date={post.data.publishedAt}
+            bylines={post.data.bylines}
+          />
+        ))}
+      </div>
+    ) : (
+      <div class="cms-empty-state cms-empty-state-large">
+        <div class="cms-empty-mark" aria-hidden="true">AJ</div>
+        <div>
+          <h2>No articles have been published yet</h2>
+          <p>When the Centre team publishes its first article in EmDash, it will appear here automatically.</p>
+        </div>
+        <a class="button button-primary" href="/_emdash/admin">Open the publishing panel</a>
+      </div>
+    )}
+  </section>
+</Base>

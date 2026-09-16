@@ -1,0 +1,163 @@
+---
+import { getEmDashCollection } from "emdash";
+import { ArrowRight, ArrowUpRight, HeartHandshake, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
+import { InstagramGallery } from "../../components/instagram-gallery";
+import { LocalGallery } from "../../components/local-gallery";
+import PostCard from "../components/PostCard.astro";
+import Base from "../layouts/Base.astro";
+
+const profiles = [
+  { platform: "Facebook", handle: "Al - Jannah Centre", href: "https://www.facebook.com/aljannahcentre/", mark: "f" },
+  { platform: "Instagram", handle: "@aljannahcentre", href: "https://www.instagram.com/aljannahcentre/", mark: "◎" },
+  { platform: "YouTube", handle: "@al-jannahcentre5619", href: "https://www.youtube.com/@al-jannahcentre5619", mark: "▶" },
+];
+
+const accounts = [
+  { bank: "Amãna Bank PLC", account: "010-0482796-001", branch: "Negombo", swift: "AMNALKLX" },
+  { bank: "People’s Bank", account: "142-2-001-6-0056821", branch: "Chillaw Rd, Kochchikade", swift: "PSBKLKLX" },
+];
+
+let posts: any[] = [];
+let cacheHint: unknown;
+try {
+  const result = await getEmDashCollection("posts", {
+    orderBy: { published_at: "desc" },
+    limit: 4,
+  });
+  posts = result.entries;
+  cacheHint = result.cacheHint;
+} catch {
+  // The public homepage still renders when a new site's database is awaiting setup.
+}
+if (Astro.cache?.enabled && cacheHint) Astro.cache.set(cacheHint);
+---
+
+<Base title="Al-Jannah Centre" description="Al-Jannah Centre for children with special needs and skills in Kochchikade, Negombo.">
+  <section class="hero" id="top">
+    <div class="hero-copy">
+      <p class="eyebrow"><span /> Kochchikade, Negombo · Sri Lanka</p>
+      <h1>A place where every child can <em>shine.</em></h1>
+      <p class="hero-lede">
+        Al-Jannah Centre is for children with special needs and skills. We welcome
+        families, friends and supporters to connect with the Centre.
+      </p>
+      <div class="hero-actions">
+        <a class="button button-primary" href="#contact">Contact the Centre <ArrowRight size={18} /></a>
+        <a class="button button-light" href="#gallery">View photo gallery <ArrowUpRight size={17} /></a>
+      </div>
+      <div class="hero-points">
+        <p><HeartHandshake size={18} /> Give hope. <strong>Change a life.</strong></p>
+        <p><span class="dot" /> Official links and contact details</p>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <i class="orbit orbit-large" /><i class="orbit orbit-small" />
+      <div class="poster">
+        <div class="poster-caption"><span>Al-Jannah Centre</span><span>Support poster</span></div>
+        <img src="/al-jannah-support-poster.png" alt="Al-Jannah Centre support poster with bank-account details" />
+      </div>
+      <p class="visual-note">Give hope. Change a life.</p>
+    </div>
+  </section>
+
+  <section class="intro" id="about">
+    <p class="kicker">The Centre</p>
+    <div>
+      <h2>Celebrating abilities, talents, faiths and values.</h2>
+      <p>
+        The Centre publicly describes its work as education, therapy and vocational
+        training for children with special needs. For programme and admission
+        enquiries, speak directly with the Centre.
+      </p>
+    </div>
+    <a class="text-link" href="/pages/about">Learn about the Centre <ArrowRight size={17} /></a>
+  </section>
+
+  <section class="cms-updates" id="articles" aria-labelledby="updates-title">
+    <div class="cms-section-heading">
+      <div>
+        <p class="kicker">From the Centre</p>
+        <h2 id="updates-title">Articles &amp; updates</h2>
+      </div>
+      <p>Published stories, announcements and celebrations will appear here as the Centre shares them.</p>
+    </div>
+    {posts.length > 0 ? (
+      <div class="cms-post-grid">
+        {posts.map((post) => (
+          <PostCard
+            title={post.data.title}
+            excerpt={post.data.excerpt}
+            content={post.data.content}
+            featuredImage={post.data.featured_image}
+            href={"/posts/" + post.id}
+            date={post.data.publishedAt}
+            bylines={post.data.bylines}
+          />
+        ))}
+      </div>
+    ) : (
+      <div class="cms-empty-state">
+        <div class="cms-empty-mark" aria-hidden="true">AJ</div>
+        <div>
+          <h3>New stories are coming soon</h3>
+          <p>The Centre team can publish the next article from the secure EmDash admin panel.</p>
+        </div>
+        <a class="text-link" href="/posts">View the article archive <ArrowRight size={17} /></a>
+      </div>
+    )}
+  </section>
+
+  <section class="channels" aria-labelledby="channels-title">
+    <div class="section-top">
+      <div><p class="kicker">Stay connected</p><h2 id="channels-title">Official social channels</h2></div>
+      <p>Follow the Centre’s own pages for announcements, celebrations and day-to-day updates.</p>
+    </div>
+    <div class="profile-grid">
+      {profiles.map((profile) => (
+        <a class="profile-card" href={profile.href} target="_blank" rel="noreferrer">
+          <span class="profile-icon" aria-hidden="true">{profile.mark}</span>
+          <span><small>{profile.platform}</small><strong>{profile.handle}</strong></span>
+          <ArrowUpRight size={19} />
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <LocalGallery client:visible />
+  <InstagramGallery client:visible />
+
+  <section class="support" id="support" aria-labelledby="support-title">
+    <div>
+      <p class="kicker kicker-light">Support the Centre</p>
+      <h2 id="support-title">Your support helps make room for possibility.</h2>
+      <p>Use the bank details shown on the Centre’s support poster, or contact the Centre directly before making a contribution.</p>
+      <a class="button button-gold" href="#contact">Confirm donation details <ArrowRight size={18} /></a>
+    </div>
+    <div class="accounts">
+      {accounts.map((item) => (
+        <article class="account-card">
+          <div class="bank"><span>AJ</span><strong>{item.bank}</strong></div>
+          <dl>
+            <div><dt>Account name</dt><dd>Al-Jannah Centre</dd></div>
+            <div><dt>Account number</dt><dd>{item.account}</dd></div>
+            <div><dt>Branch</dt><dd>{item.branch}</dd></div>
+            <div><dt>SWIFT code</dt><dd>{item.swift}</dd></div>
+          </dl>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="contact" id="contact" aria-labelledby="contact-title">
+    <div class="contact-copy">
+      <p class="kicker">Get in touch</p><h2 id="contact-title">We’re here to connect.</h2>
+      <p>Reach out to the Centre for enquiries, visits and support.</p>
+    </div>
+    <div class="contact-grid">
+      <a href="tel:+94771001518"><Phone size={20} /><span><small>Call</small><strong>+94 77 100 1518</strong></span></a>
+      <a href="https://wa.me/94752223370" target="_blank" rel="noreferrer"><MessageCircle size={20} /><span><small>WhatsApp</small><strong>+94 75 222 3370</strong></span></a>
+      <a href="mailto:aljannahcentresrilanka@gmail.com"><Mail size={20} /><span><small>Email</small><strong>aljannahcentresrilanka@gmail.com</strong></span></a>
+      <a href="https://www.google.com/maps/search/?api=1&query=20%2FA%20Negombo%20Road%2C%20Kochchikade%2C%20Sri%20Lanka" target="_blank" rel="noreferrer"><MapPin size={20} /><span><small>Visit</small><strong>20/A Negombo Road, Kochchikade</strong></span></a>
+    </div>
+  </section>
+</Base>

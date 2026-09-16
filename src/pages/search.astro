@@ -1,0 +1,58 @@
+---
+import { search } from "emdash";
+import Base from "../layouts/Base.astro";
+
+export const prerender = false;
+const query = Astro.url.searchParams.get("q")?.trim() || "";
+let results: any[] = [];
+
+if (query) {
+  try {
+    const response = await search(query, { collections: ["posts", "pages"], limit: 30 });
+    results = response.items;
+  } catch {
+    results = [];
+  }
+}
+---
+
+<Base
+  title={query ? "Search: " + query : "Search"}
+  description="Search Al-Jannah Centre articles and pages."
+>
+  <section class="cms-search-page">
+    <header class="cms-archive-heading">
+      <p class="kicker">Find a story</p>
+      <h1>Search</h1>
+    </header>
+    <form method="get" action="/search" class="cms-search-form">
+      <label for="site-search">Search articles and pages</label>
+      <div>
+        <input id="site-search" type="search" name="q" value={query} placeholder="Try “community”" />
+        <button class="button button-primary" type="submit">Search</button>
+      </div>
+    </form>
+
+    {query && (
+      <p class="cms-search-summary">
+        {results.length === 0 ? "No results for “" + query + "”" : results.length + " result" + (results.length === 1 ? "" : "s") + " for “" + query + "”"}
+      </p>
+    )}
+
+    {results.length > 0 ? (
+      <ol class="cms-search-results">
+        {results.map((result) => (
+          <li>
+            <a href={"/" + (result.collection === "pages" ? "pages/" : "posts/") + (result.slug ?? result.id)}>
+              <span class="cms-search-result-type">{result.collection === "pages" ? "Page" : "Article"}</span>
+              <h2>{result.title ?? "Untitled"}</h2>
+              {result.snippet && <p set:html={result.snippet} />}
+            </a>
+          </li>
+        ))}
+      </ol>
+    ) : (
+      <p class="cms-search-hint">{query ? "Try a different search term." : "Enter a search term to find Centre articles and pages."}</p>
+    )}
+  </section>
+</Base>

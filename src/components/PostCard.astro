@@ -1,0 +1,42 @@
+---
+import type { ContentBylineCredit, MediaValue } from "emdash";
+import { Image } from "emdash/ui";
+import { getReadingTime } from "../utils/reading-time";
+
+interface Props {
+  title: string;
+  excerpt?: string | null;
+  content?: unknown;
+  featuredImage?: MediaValue | string | null;
+  href: string;
+  date?: Date | null;
+  bylines?: ContentBylineCredit[];
+}
+
+const { title, excerpt, content, featuredImage, href, date, bylines = [] } = Astro.props;
+const formattedDate = date
+  ? date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })
+  : null;
+const readingTime = getReadingTime(content);
+---
+
+<article class="cms-post-card">
+  <a href={href} class="cms-post-card-link">
+    {featuredImage ? (
+      <div class="cms-post-card-image"><Image image={featuredImage} /></div>
+    ) : (
+      <div class="cms-post-card-placeholder" aria-hidden="true">
+        <span>AJ</span>
+      </div>
+    )}
+    <div class="cms-post-card-body">
+      <div class="cms-post-meta">
+        {bylines.length > 0 && <span>{bylines[0].byline.displayName}</span>}
+        {formattedDate && <><span class="cms-meta-dot" /><time>{formattedDate}</time></>}
+        <span class="cms-meta-dot" /><span>{readingTime} min read</span>
+      </div>
+      <h3>{title}</h3>
+      {excerpt && <p>{excerpt}</p>}
+    </div>
+  </a>
+</article>

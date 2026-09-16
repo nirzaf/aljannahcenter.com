@@ -1,0 +1,22 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "aljannahcenter-emdash",
+  "main": "./src/worker.ts",
+  "compatibility_date": "2026-09-16",
+  "compatibility_flags": ["nodejs_compat"],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "aljannahcenter-emdash"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "MEDIA",
+      "bucket_name": "aljannahcenter-media"
+    }
+  ],
+  "triggers": {
+    "crons": ["* * * * *"]
+  }
+}

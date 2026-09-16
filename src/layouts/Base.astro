@@ -1,0 +1,191 @@
+---
+import { getMenu, getSiteSettings } from "emdash";
+import {
+  EmDashBodyEnd,
+  EmDashBodyStart,
+  EmDashHead,
+  WidgetArea,
+} from "emdash/ui";
+import LiveSearch from "emdash/ui/search";
+import { createPublicPageContext } from "emdash/page";
+import "../../app/globals.css";
+import "../styles/cms.css";
+
+interface Props {
+  title: string;
+  description?: string | null;
+  image?: string | null;
+  canonical?: string | null;
+  type?: "website" | "article";
+  publishedTime?: string | null;
+  modifiedTime?: string | null;
+  author?: string | null;
+  content?: { collection: string; id: string; slug?: string | null };
+}
+
+type NavItem = {
+  label: string;
+  url: string;
+  target?: string;
+};
+
+const {
+  title,
+  description,
+  image,
+  canonical,
+  type = "website",
+  publishedTime,
+  modifiedTime,
+  author,
+  content,
+} = Astro.props;
+
+let siteTitle = "Al-Jannah Centre";
+let siteTagline = "A place where every child can shine.";
+let primaryItems: NavItem[] = [
+  { label: "Home", url: "/" },
+  { label: "About", url: "/pages/about" },
+  { label: "Articles", url: "/posts" },
+  { label: "Gallery", url: "/#gallery" },
+  { label: "Support", url: "/#support" },
+];
+let socialItems: NavItem[] = [
+  { label: "Facebook", url: "https://www.facebook.com/aljannahcentre/", target: "_blank" },
+  { label: "Instagram", url: "https://www.instagram.com/aljannahcentre/", target: "_blank" },
+  { label: "YouTube", url: "https://www.youtube.com/@al-jannahcentre5619", target: "_blank" },
+];
+
+try {
+  const settings = await getSiteSettings();
+  siteTitle = settings.title || siteTitle;
+  siteTagline = settings.tagline || siteTagline;
+} catch {
+  // The public shell remains useful while a new D1 database is being initialized.
+}
+
+try {
+  const menu = await getMenu("primary");
+  if (menu?.items?.length) primaryItems = menu.items as NavItem[];
+} catch {
+  // Fall back to the local navigation until the seed is applied.
+}
+
+try {
+  const menu = await getMenu("social");
+  if (menu?.items?.length) socialItems = menu.items as NavItem[];
+} catch {
+  // The fallback social links are the Centre's known official channels.
+}
+
+const currentPath = Astro.url.pathname;
+const fullTitle = title === siteTitle || title.includes(siteTitle)
+  ? title
+  : title + " | " + siteTitle;
+const resolvedCanonical = canonical ?? new URL(Astro.url.pathname, Astro.url).toString();
+const pageContext = createPublicPageContext({
+  Astro,
+  kind: content ? "content" : "custom",
+  pageType: type,
+  title: fullTitle,
+  pageTitle: title,
+  description: description ?? siteTagline,
+  canonical: resolvedCanonical,
+  image,
+  content,
+  seo: { ogImage: image },
+  articleMeta: { publishedTime, modifiedTime, author },
+  siteName: siteTitle,
+});
+const isLoggedIn = Boolean(Astro.locals.user);
+
+function isActive(url: string) {
+  if (url.startsWith("#")) return false;
+  const path = url.split("#")[0];
+  return path === "/" ? currentPath === "/" : currentPath === path || currentPath.startsWith(path + "/");
+}
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#102252" />
+    <title>{fullTitle}</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <EmDashHead page={pageContext} />
+  </head>
+  <body>
+    <EmDashBodyStart page={pageContext} />
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label={siteTitle + " home"}>
+        <span class="brand-logo" aria-hidden="true">
+          <img src="/al-jannah-support-poster.png" alt="" />
+        </span>
+        <span><strong>Al-Jannah</strong><small>Centre</small></span>
+      </a>
+      <nav class="cms-primary-nav" aria-label="Primary navigation">
+        {primaryItems.map((item) => (
+          <a
+            href={item.url}
+            target={item.target}
+            rel={item.target === "_blank" ? "noopener noreferrer" : undefined}
+            aria-current={isActive(item.url) ? "page" : undefined}
+          >{item.label}</a>
+        ))}
+      </nav>
+      <div class="cms-header-actions">
+        <LiveSearch
+          placeholder="Search articles"
+          class="cms-search"
+          inputClass="cms-search-input"
+          resultsClass="cms-search-results"
+          resultClass="cms-search-result"
+          collections={["posts", "pages"]}
+          searchPage="/search"
+          routeMap={{ posts: "/posts/:path", pages: "/pages/:path" }}
+        />
+        {isLoggedIn && <a class="cms-admin-link" href="/_emdash/admin">Admin</a>}
+        <a class="header-cta" href="/#support">Support the Centre</a>
+      </div>
+    </header>
+    <nav class="cms-mobile-nav" aria-label="Mobile navigation">
+      {primaryItems.map((item) => (
+        <a href={item.url} aria-current={isActive(item.url) ? "page" : undefined}>{item.label}</a>
+      ))}
+      <a href="/search">Search</a>
+      {isLoggedIn && <a href="/_emdash/admin">Admin</a>}
+    </nav>
+
+    <main id="main-content">
+      <slot />
+    </main>
+
+    <footer class="cms-footer">
+      <div class="cms-footer-top">
+        <a class="brand" href="/" aria-label={siteTitle + " home"}>
+          <span class="brand-logo" aria-hidden="true">
+            <img src="/al-jannah-support-poster.png" alt="" />
+          </span>
+          <span><strong>Al-Jannah</strong><small>Centre</small></span>
+        </a>
+        <p>{siteTagline}</p>
+        <div class="cms-footer-socials">
+          {socialItems.map((item) => (
+            <a href={item.url} target={item.target} rel="noopener noreferrer">{item.label}</a>
+          ))}
+          <a href="/rss.xml">RSS feed</a>
+        </div>
+      </div>
+      <div class="cms-footer-bottom">
+        <p>For children with special needs and skills.</p>
+        <a href="/_emdash/admin">Publish an article <span aria-hidden="true">↗</span></a>
+        <a href="#main-content">Back to top ↑</a>
+      </div>
+      <div class="cms-footer-widget"><WidgetArea name="footer" /></div>
+    </footer>
+    <EmDashBodyEnd page={pageContext} />
+  </body>
+</html>
