@@ -116,6 +116,16 @@ Replace the filename with the pending migration and `DB` with your D1 binding na
 - `npm run start`: preview the built Worker locally with D1/R2 support
 - `npm run db:generate`: generate Drizzle migrations after schema changes
 
+## GitHub Actions deployment
+
+The workflow in `.github/workflows/deploy.yml` runs linting and a production build
+for pull requests. A push to `main`, or a manual workflow run, also deploys the
+existing Cloudflare Worker that serves this Site.
+
+Before the first deployment, add a GitHub Actions repository secret named
+`CLOUDFLARE_API_TOKEN`. Use a Cloudflare API token with Editor access to this
+existing Worker. Keep the token in GitHub Secrets; never commit it to the repo.
+
 When using the Sites plugin, follow its skill instructions for installation, builds, and publishing. These npm commands remain available for standalone use.
 
 The portable build runs Vinext directly without a host `timeout` command. The managed-linux build uses `scripts/build-verified.sh` and its existing `SITES_BUILD_TIMEOUT` setting.

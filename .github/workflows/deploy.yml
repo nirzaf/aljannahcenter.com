@@ -1,0 +1,79 @@
+name: CI/CD - Cloudflare Site
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cloudflare-production
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: "22.13.0"
+  PNPM_VERSION: "11.25.0"
+  CLOUDFLARE_ACCOUNT_ID: "2db09fcf0200901fe505244faa2f81d9"
+  CLOUDFLARE_WORKER_NAME: "site---6aa97b6283b881919ee7ee057b47f332"
+
+jobs:
+  verify-and-deploy:
+    name: Verify and deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm run lint
+
+      - name: Build deployment artifact
+        run: pnpm run build
+
+      - name: Verify deployment artifact
+        run: |
+          test -f dist/server/index.js
+          test -f dist/server/wrangler.json
+          test -d dist/client
+
+      - name: Check Cloudflare deployment secret
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "::error::Add the CLOUDFLARE_API_TOKEN GitHub Actions secret before deploying."
+            exit 1
+          fi
+
+      - name: Deploy to Cloudflare
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ env.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: "4.92.0"
+          command: deploy --config dist/server/wrangler.json --name ${{ env.CLOUDFLARE_WORKER_NAME }}
