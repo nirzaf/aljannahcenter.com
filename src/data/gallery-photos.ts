@@ -6,11 +6,6 @@ export type GalleryPhoto = {
 
 export const galleryPhotos: GalleryPhoto[] = [
   {
-    id: "1462718712569951",
-    src: "/gallery/photo-001.jpg",
-    alt: "Al-Jannah Centre gallery photo 001",
-  },
-  {
     id: "1454211063420716",
     src: "/gallery/photo-002.jpg",
     alt: "Al-Jannah Centre gallery photo 002",

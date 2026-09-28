@@ -2,8 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowUpRight, ChevronLeft, ChevronRight, Images, X } from "lucide-react";
-import { galleryPhotos } from "../app/gallery-photos";
-import { instagramPhotos } from "../app/instagram-photos";
+import { galleryPhotos } from "../data/gallery-photos";
+import { instagramPhotos } from "../data/instagram-photos";
 
 type Photo = {
   id: string;
