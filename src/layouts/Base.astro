@@ -8,8 +8,10 @@ import {
 } from "emdash/ui";
 import LiveSearch from "emdash/ui/search";
 import { createPublicPageContext } from "emdash/page";
-import "../../app/globals.css";
-import "../styles/cms.css";
+import { HandHeart, Mail, MapPin, Menu, Phone, Search, X } from "lucide-react";
+import BrandIcon from "../components/BrandIcon.astro";
+import { centre } from "../data/centre";
+import "../styles/site.css";
 
 interface Props {
   title: string;
@@ -98,10 +100,11 @@ const pageContext = createPublicPageContext({
   siteName: siteTitle,
 });
 const isLoggedIn = Boolean(Astro.locals.user);
+const year = new Date().getFullYear();
 
 function isActive(url: string) {
-  if (url.startsWith("#")) return false;
   const path = url.split("#")[0];
+  if (url.includes("#")) return false;
   return path === "/" ? currentPath === "/" : currentPath === path || currentPath.startsWith(path + "/");
 }
 ---
@@ -110,82 +113,201 @@ function isActive(url: string) {
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#102252" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0f1f4d" />
     <title>{fullTitle}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..600&family=Nunito+Sans:opsz,wght@6..12,400..800&display=swap"
+    />
     <EmDashHead page={pageContext} />
   </head>
   <body>
     <EmDashBodyStart page={pageContext} />
     <a class="skip-link" href="#main-content">Skip to content</a>
-    <header class="site-header">
-      <a class="brand" href="/" aria-label={siteTitle + " home"}>
-        <span class="brand-logo" aria-hidden="true">
-          <img src="/al-jannah-support-poster.png" alt="" />
-        </span>
-        <span><strong>Al-Jannah</strong><small>Centre</small></span>
-      </a>
-      <nav class="cms-primary-nav" aria-label="Primary navigation">
-        {primaryItems.map((item) => (
-          <a
-            href={item.url}
-            target={item.target}
-            rel={item.target === "_blank" ? "noopener noreferrer" : undefined}
-            aria-current={isActive(item.url) ? "page" : undefined}
-          >{item.label}</a>
-        ))}
-      </nav>
-      <div class="cms-header-actions">
-        <LiveSearch
-          placeholder="Search articles"
-          class="cms-search"
-          inputClass="cms-search-input"
-          resultsClass="cms-search-results"
-          resultClass="cms-search-result"
-          collections={["posts", "pages"]}
-          searchPage="/search"
-          routeMap={{ posts: "/posts/:path", pages: "/pages/:path" }}
-        />
-        {isLoggedIn && <a class="cms-admin-link" href="/_emdash/admin">Admin</a>}
-        <a class="header-cta" href="/#support">Support the Centre</a>
+
+    <header class="site-header" data-site-header>
+      <div class="site-header-inner">
+        <a class="brand" href="/" aria-label={siteTitle + " home"}>
+          <img class="brand-logo" src="/logo.webp" alt="" width="44" height="47" />
+          <span class="brand-text"><strong>Al-Jannah</strong><small>Centre</small></span>
+        </a>
+
+        <nav class="primary-nav" aria-label="Primary navigation">
+          {primaryItems.map((item) => (
+            <a
+              href={item.url}
+              target={item.target}
+              rel={item.target === "_blank" ? "noopener noreferrer" : undefined}
+              aria-current={isActive(item.url) ? "page" : undefined}
+            >{item.label}</a>
+          ))}
+        </nav>
+
+        <div class="header-actions">
+          <LiveSearch
+            placeholder="Search articles"
+            class="header-search"
+            inputClass="header-search-input"
+            resultsClass="header-search-results"
+            resultClass="header-search-result"
+            collections={["posts", "pages"]}
+            searchPage="/search"
+            routeMap={{ posts: "/posts/:path", pages: "/pages/:path" }}
+          />
+          {isLoggedIn && <a class="header-admin" href="/_emdash/admin">Admin</a>}
+          <a class="button button-gold header-donate" href="/#support">
+            <HandHeart size={18} aria-hidden="true" /> <span>Donate</span>
+          </a>
+          <button
+            class="menu-toggle"
+            type="button"
+            aria-expanded="false"
+            aria-controls="mobile-menu"
+            data-menu-toggle
+          >
+            <Menu size={22} className="menu-icon-open" aria-hidden="true" />
+            <X size={22} className="menu-icon-close" aria-hidden="true" />
+            <span class="sr-only">Menu</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="mobile-menu" id="mobile-menu" data-mobile-menu hidden>
+        <nav aria-label="Mobile navigation">
+          {primaryItems.map((item) => (
+            <a href={item.url} aria-current={isActive(item.url) ? "page" : undefined}>{item.label}</a>
+          ))}
+          {isLoggedIn && <a href="/_emdash/admin">Admin</a>}
+        </nav>
+        <form class="mobile-search" method="get" action="/search" role="search">
+          <label class="sr-only" for="mobile-search-input">Search articles and pages</label>
+          <Search size={18} aria-hidden="true" />
+          <input id="mobile-search-input" type="search" name="q" placeholder="Search articles and pages" />
+        </form>
+        <div class="mobile-menu-contact">
+          <a href={centre.phone.href}><Phone size={18} aria-hidden="true" /> {centre.phone.label}</a>
+          <a href={centre.whatsapp.href} target="_blank" rel="noopener noreferrer"><BrandIcon name="whatsapp" size={18} /> WhatsApp</a>
+        </div>
+        <div class="mobile-menu-social">
+          {socialItems.map((item) => (
+            <a href={item.url} target="_blank" rel="noopener noreferrer" aria-label={item.label}><BrandIcon name={item.label} /></a>
+          ))}
+        </div>
       </div>
     </header>
-    <nav class="cms-mobile-nav" aria-label="Mobile navigation">
-      {primaryItems.map((item) => (
-        <a href={item.url} aria-current={isActive(item.url) ? "page" : undefined}>{item.label}</a>
-      ))}
-      <a href="/search">Search</a>
-      {isLoggedIn && <a href="/_emdash/admin">Admin</a>}
-    </nav>
 
     <main id="main-content">
       <slot />
     </main>
 
-    <footer class="cms-footer">
-      <div class="cms-footer-top">
-        <a class="brand" href="/" aria-label={siteTitle + " home"}>
-          <span class="brand-logo" aria-hidden="true">
-            <img src="/al-jannah-support-poster.png" alt="" />
-          </span>
-          <span><strong>Al-Jannah</strong><small>Centre</small></span>
-        </a>
-        <p>{siteTagline}</p>
-        <div class="cms-footer-socials">
-          {socialItems.map((item) => (
-            <a href={item.url} target={item.target} rel="noopener noreferrer">{item.label}</a>
-          ))}
-          <a href="/rss.xml">RSS feed</a>
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <div class="footer-brand">
+          <a class="brand brand-light" href="/" aria-label={siteTitle + " home"}>
+            <img class="brand-logo" src="/logo.webp" alt="" width="44" height="47" loading="lazy" />
+            <span class="brand-text"><strong>Al-Jannah</strong><small>Centre</small></span>
+          </a>
+          <p>{siteTagline} {centre.tagline}, serving families in Kochchikade and Negombo since {centre.since}.</p>
+          <div class="footer-social">
+            {socialItems.map((item) => (
+              <a href={item.url} target="_blank" rel="noopener noreferrer" aria-label={item.label}><BrandIcon name={item.label} /></a>
+            ))}
+          </div>
+        </div>
+        <div>
+          <h2 class="footer-title">Explore</h2>
+          <ul class="footer-links">
+            {primaryItems.map((item) => <li><a href={item.url}>{item.label}</a></li>)}
+            <li><a href="/posts">Article archive</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="footer-title">Contact</h2>
+          <ul class="footer-links footer-contact">
+            <li><a href={centre.phone.href}><Phone size={16} aria-hidden="true" /> {centre.phone.label}</a></li>
+            <li><a href={centre.whatsapp.href} target="_blank" rel="noopener noreferrer"><BrandIcon name="whatsapp" size={16} /> {centre.whatsapp.label}</a></li>
+            <li><a href={centre.email.href}><Mail size={16} aria-hidden="true" /> <span class="break">{centre.email.label}</span></a></li>
+            <li><a href={centre.address.mapHref} target="_blank" rel="noopener noreferrer"><MapPin size={16} aria-hidden="true" /> {centre.address.lines.join(", ")}</a></li>
+          </ul>
         </div>
       </div>
-      <div class="cms-footer-bottom">
-        <p>For children with special needs and skills.</p>
-        <a href="/_emdash/admin">Publish an article <span aria-hidden="true">↗</span></a>
-        <a href="#main-content">Back to top ↑</a>
+      <div class="container footer-bottom">
+        <p>© {year} {siteTitle}. Give hope. Change a life.</p>
+        <div>
+          <a href="/rss.xml">RSS</a>
+          <a href="/_emdash/admin">Staff sign in</a>
+        </div>
       </div>
-      <div class="cms-footer-widget"><WidgetArea name="footer" /></div>
+      <div class="footer-widget"><WidgetArea name="footer" /></div>
     </footer>
+
+    <nav class="action-bar" aria-label="Quick actions">
+      <a href={centre.phone.href}><Phone size={20} aria-hidden="true" /><span>Call</span></a>
+      <a href={centre.whatsapp.href} target="_blank" rel="noopener noreferrer"><BrandIcon name="whatsapp" /><span>WhatsApp</span></a>
+      <a class="action-bar-primary" href="/#support"><HandHeart size={20} aria-hidden="true" /><span>Donate</span></a>
+    </nav>
+
     <EmDashBodyEnd page={pageContext} />
+
+    <script>
+      const header = document.querySelector<HTMLElement>("[data-site-header]");
+      const toggle = document.querySelector<HTMLButtonElement>("[data-menu-toggle]");
+      const menu = document.querySelector<HTMLElement>("[data-mobile-menu]");
+
+      function setMenu(open: boolean) {
+        if (!toggle || !menu) return;
+        toggle.setAttribute("aria-expanded", String(open));
+        menu.hidden = !open;
+        document.documentElement.classList.toggle("menu-open", open);
+      }
+
+      toggle?.addEventListener("click", () => setMenu(toggle.getAttribute("aria-expanded") !== "true"));
+      menu?.addEventListener("click", (event) => {
+        if ((event.target as HTMLElement).closest("a")) setMenu(false);
+      });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && toggle?.getAttribute("aria-expanded") === "true") {
+          setMenu(false);
+          toggle.focus();
+        }
+      });
+      window.matchMedia("(min-width: 1024px)").addEventListener("change", (event) => {
+        if (event.matches) setMenu(false);
+      });
+
+      const onScroll = () => header?.classList.toggle("is-scrolled", window.scrollY > 8);
+      onScroll();
+      window.addEventListener("scroll", onScroll, { passive: true });
+
+      // Copy buttons, used for bank account details.
+      document.addEventListener("click", async (event) => {
+        const button = (event.target as HTMLElement).closest<HTMLButtonElement>("[data-copy]");
+        if (!button) return;
+        const value = button.dataset.copy ?? "";
+        try {
+          await navigator.clipboard.writeText(value);
+        } catch {
+          const field = document.createElement("textarea");
+          field.value = value;
+          document.body.appendChild(field);
+          field.select();
+          document.execCommand("copy");
+          field.remove();
+        }
+        const label = button.querySelector("[data-copy-label]");
+        const original = label?.textContent;
+        button.classList.add("is-copied");
+        if (label) label.textContent = "Copied";
+        window.setTimeout(() => {
+          button.classList.remove("is-copied");
+          if (label && original) label.textContent = original;
+        }, 1800);
+      });
+    </script>
   </body>
 </html>

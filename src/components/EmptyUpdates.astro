@@ -1,0 +1,30 @@
+---
+import { ArrowUpRight } from "lucide-react";
+import BrandIcon from "./BrandIcon.astro";
+
+interface Props {
+  isLoggedIn?: boolean;
+}
+
+const { isLoggedIn = false } = Astro.props;
+---
+
+<div class="empty-state">
+  <img src="/logo.webp" alt="" width="60" height="64" loading="lazy" />
+  <h2>New stories are on their way</h2>
+  {isLoggedIn ? (
+    <p>Publish a daily note or weekly roundup in EmDash and it will appear here automatically.</p>
+  ) : (
+    <p>Articles from the Centre will appear here. In the meantime, daily moments are shared on the Centre’s Facebook and Instagram pages.</p>
+  )}
+  <div class="empty-state-actions">
+    {isLoggedIn ? (
+      <a class="button button-primary" href="/_emdash/admin">Open the publishing panel</a>
+    ) : (
+      <>
+        <a class="button button-primary" href="https://www.facebook.com/aljannahcentre/" target="_blank" rel="noreferrer"><BrandIcon name="facebook" size={18} /> Facebook updates</a>
+        <a class="button button-outline" href="https://www.instagram.com/aljannahcentre/" target="_blank" rel="noreferrer"><BrandIcon name="instagram" size={18} /> Instagram <ArrowUpRight size={16} aria-hidden="true" /></a>
+      </>
+    )}
+  </div>
+</div>

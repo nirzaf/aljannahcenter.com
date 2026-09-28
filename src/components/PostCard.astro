@@ -15,25 +15,25 @@ interface Props {
 
 const { title, excerpt, content, featuredImage, href, date, bylines = [] } = Astro.props;
 const formattedDate = date
-  ? date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })
+  ? date.toLocaleDateString("en-GB", { year: "numeric", month: "short", day: "numeric" })
   : null;
 const readingTime = getReadingTime(content);
 ---
 
-<article class="cms-post-card">
-  <a href={href} class="cms-post-card-link">
+<article class="post-card">
+  <a href={href} class="post-card-link">
     {featuredImage ? (
-      <div class="cms-post-card-image"><Image image={featuredImage} /></div>
+      <div class="post-card-image"><Image image={featuredImage} /></div>
     ) : (
-      <div class="cms-post-card-placeholder" aria-hidden="true">
-        <span>AJ</span>
+      <div class="post-card-placeholder" aria-hidden="true">
+        <img src="/logo.webp" alt="" width="56" height="60" loading="lazy" />
       </div>
     )}
-    <div class="cms-post-card-body">
-      <div class="cms-post-meta">
-        {bylines.length > 0 && <span>{bylines[0].byline.displayName}</span>}
-        {formattedDate && <><span class="cms-meta-dot" /><time>{formattedDate}</time></>}
-        <span class="cms-meta-dot" /><span>{readingTime} min read</span>
+    <div class="post-card-body">
+      <div class="post-meta">
+        {formattedDate && <time datetime={date?.toISOString()}>{formattedDate}</time>}
+        {bylines.length > 0 && <><span class="meta-dot" /><span>{bylines[0].byline.displayName}</span></>}
+        <span class="meta-dot" /><span>{readingTime} min read</span>
       </div>
       <h3>{title}</h3>
       {excerpt && <p>{excerpt}</p>}

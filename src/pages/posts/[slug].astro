@@ -1,6 +1,7 @@
 ---
 import { decodeSlug, getEmDashEntry } from "emdash";
 import { Image, PortableText } from "emdash/ui";
+import { ArrowLeft, HandHeart, Phone } from "lucide-react";
 import Base from "../../layouts/Base.astro";
 import { getReadingTime } from "../../utils/reading-time";
 
@@ -27,38 +28,36 @@ const readingTime = getReadingTime(post.data.content);
   author={author}
   content={{ collection: "posts", id: post.data.id, slug }}
 >
-  <article class="cms-article">
-    <a class="cms-back-link" href="/posts">← All articles</a>
-    <header class="cms-article-header">
-      <p class="kicker">Al-Jannah Centre · Article</p>
+  <article class="container article">
+    <a class="back-link" href="/updates"><ArrowLeft size={16} aria-hidden="true" /> All updates</a>
+    <header class="article-header">
+      <p class="kicker">Al-Jannah Centre · Update</p>
       <h1>{post.data.title}</h1>
-      <div class="cms-article-meta">
-        {author && <span>{author}</span>}
+      <div class="article-meta">
         {post.data.publishedAt && (
-          <>
-            <span class="cms-meta-dot" />
-            <time datetime={publishedTime ?? undefined}>
-              {post.data.publishedAt.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
-            </time>
-          </>
+          <time datetime={publishedTime ?? undefined}>
+            {post.data.publishedAt.toLocaleDateString("en-GB", { year: "numeric", month: "long", day: "numeric" })}
+          </time>
         )}
-        <span class="cms-meta-dot" /><span>{readingTime} min read</span>
+        {author && <><span class="meta-dot" /><span>{author}</span></>}
+        <span class="meta-dot" /><span>{readingTime} min read</span>
       </div>
-      {post.data.excerpt && <p class="cms-article-excerpt">{post.data.excerpt}</p>}
+      {post.data.excerpt && <p class="article-excerpt">{post.data.excerpt}</p>}
     </header>
 
     {post.data.featured_image && (
-      <div class="cms-article-image"><Image image={post.data.featured_image} /></div>
+      <div class="article-image"><Image image={post.data.featured_image} /></div>
     )}
 
-    <div class="cms-article-layout">
-      <aside class="cms-article-aside">
-        <a href="/#support">Support the Centre</a>
-        <a href="/#contact">Contact the Centre</a>
-      </aside>
-      <div class="cms-article-content">
+    <div class="article-layout">
+      <div class="prose">
         <PortableText value={post.data.content ?? []} />
       </div>
+      <aside class="article-aside" aria-label="Get involved">
+        <p>Inspired by this story?</p>
+        <a class="button button-gold" href="/#support"><HandHeart size={17} aria-hidden="true" /> Support the Centre</a>
+        <a class="button button-outline" href="/#contact"><Phone size={16} aria-hidden="true" /> Contact us</a>
+      </aside>
     </div>
   </article>
 </Base>

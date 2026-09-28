@@ -1,29 +1,60 @@
 ---
 import { decodeSlug, getEmDashEntry } from "emdash";
 import { PortableText } from "emdash/ui";
+import { ArrowLeft, HandHeart } from "lucide-react";
 import Base from "../../layouts/Base.astro";
+import BrandIcon from "../../components/BrandIcon.astro";
+import { centre } from "../../data/centre";
 
 const slug = Astro.params.slug ? decodeSlug(Astro.params.slug) : null;
 if (!slug) return Astro.redirect("/404");
 
-const { entry: page, cacheHint } = await getEmDashEntry("pages", slug);
-if (!page) return Astro.redirect("/404");
-if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
+// The About page is linked from the main navigation, so keep a built-in copy
+// for databases that have not been seeded yet.
+const fallbackPages: Record<string, { title: string; paragraphs: string[] }> = {
+  about: {
+    title: "About Al-Jannah Centre",
+    paragraphs: [
+      "Al-Jannah Centre welcomes children with special needs and skills. The Centre publicly describes its work across education, therapy and vocational training.",
+      "For programme, admission and visit enquiries, please contact the Centre directly.",
+    ],
+  },
+};
+
+let page: any = null;
+try {
+  const result = await getEmDashEntry("pages", slug);
+  page = result.entry;
+  if (page && Astro.cache?.enabled) Astro.cache.set(result.cacheHint);
+} catch {
+  // Fall through to the built-in copy while the CMS database is initialized.
+}
+const fallback = page ? null : fallbackPages[slug];
+if (!page && !fallback) return Astro.redirect("/404");
+const title = page ? page.data.title : fallback!.title;
 ---
 
 <Base
-  title={page.data.title}
+  title={title}
   description="Learn more about Al-Jannah Centre."
-  content={{ collection: "pages", id: page.data.id, slug }}
+  content={page ? { collection: "pages", id: page.data.id, slug } : undefined}
 >
-  <article class="cms-page-article">
-    <a class="cms-back-link" href="/">← Back to the Centre</a>
-    <header class="cms-page-heading">
+  <header class="page-hero">
+    <div class="container">
+      <a class="back-link" href="/"><ArrowLeft size={16} aria-hidden="true" /> Back to home</a>
       <p class="kicker">The Centre</p>
-      <h1>{page.data.title}</h1>
-    </header>
-    <div class="cms-page-content">
-      <PortableText value={page.data.content ?? []} />
+      <h1>{title}</h1>
     </div>
-  </article>
+  </header>
+  <div class="container page-layout">
+    <article class="prose">
+      {page ? <PortableText value={page.data.content ?? []} /> : fallback!.paragraphs.map((text) => <p>{text}</p>)}
+    </article>
+    <aside class="page-cta" aria-label="Get in touch">
+      <h2>Talk with the Centre</h2>
+      <p>For programme, admission and visit enquiries, the team is happy to help.</p>
+      <a class="button button-gold" href={centre.whatsapp.href} target="_blank" rel="noopener noreferrer"><BrandIcon name="whatsapp" size={18} /> Message on WhatsApp</a>
+      <a class="button button-ghost-light" href="/#support"><HandHeart size={17} aria-hidden="true" /> Ways to support</a>
+    </aside>
+  </div>
 </Base>

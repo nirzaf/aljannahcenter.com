@@ -1,5 +1,6 @@
 ---
 import { search } from "emdash";
+import { Search } from "lucide-react";
 import Base from "../layouts/Base.astro";
 
 export const prerender = false;
@@ -20,31 +21,33 @@ if (query) {
   title={query ? "Search: " + query : "Search"}
   description="Search Al-Jannah Centre articles and pages."
 >
-  <section class="cms-search-page">
-    <header class="cms-archive-heading">
+  <header class="page-hero">
+    <div class="container">
       <p class="kicker">Find a story</p>
       <h1>Search</h1>
-    </header>
-    <form method="get" action="/search" class="cms-search-form">
-      <label for="site-search">Search articles and pages</label>
-      <div>
-        <input id="site-search" type="search" name="q" value={query} placeholder="Try “community”" />
-        <button class="button button-primary" type="submit">Search</button>
-      </div>
-    </form>
+      <form method="get" action="/search" class="search-form" role="search">
+        <label class="sr-only" for="site-search">Search articles and pages</label>
+        <div>
+          <input id="site-search" type="search" name="q" value={query} placeholder="Try “exhibition”" />
+          <button class="button button-primary" type="submit"><Search size={17} aria-hidden="true" /> Search</button>
+        </div>
+      </form>
+    </div>
+  </header>
 
+  <div class="container page-body">
     {query && (
-      <p class="cms-search-summary">
+      <p class="search-summary" aria-live="polite">
         {results.length === 0 ? "No results for “" + query + "”" : results.length + " result" + (results.length === 1 ? "" : "s") + " for “" + query + "”"}
       </p>
     )}
 
     {results.length > 0 ? (
-      <ol class="cms-search-results">
+      <ol class="search-results">
         {results.map((result) => (
           <li>
             <a href={"/" + (result.collection === "pages" ? "pages/" : "posts/") + (result.slug ?? result.id)}>
-              <span class="cms-search-result-type">{result.collection === "pages" ? "Page" : "Article"}</span>
+              <span class="search-result-type">{result.collection === "pages" ? "Page" : "Article"}</span>
               <h2>{result.title ?? "Untitled"}</h2>
               {result.snippet && <p set:html={result.snippet} />}
             </a>
@@ -52,7 +55,7 @@ if (query) {
         ))}
       </ol>
     ) : (
-      <p class="cms-search-hint">{query ? "Try a different search term." : "Enter a search term to find Centre articles and pages."}</p>
+      <p class="search-summary">{query ? "Try a different word, or browse the latest updates." : "Enter a word to search the Centre’s articles and pages."}</p>
     )}
-  </section>
+  </div>
 </Base>
