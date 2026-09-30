@@ -8,7 +8,11 @@ import emdash from "emdash/astro";
 export default defineConfig({
   site: "https://aljannahcentre.com",
   output: "server",
-  adapter: cloudflare({ imageService: "passthrough" }),
+  adapter: cloudflare({
+    imageService: "passthrough",
+    // The adapter must inject the R2 bucket object into the session driver.
+    sessionKVBindingName: "MEDIA",
+  }),
   session: {
     driver: sessionDrivers.cloudflareR2Binding({
       binding: "MEDIA",
