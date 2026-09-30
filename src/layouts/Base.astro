@@ -56,7 +56,6 @@ let primaryItems: NavItem[] = [
 let socialItems: NavItem[] = [
   { label: "Facebook", url: "https://www.facebook.com/aljannahcentre/", target: "_blank" },
   { label: "Instagram", url: "https://www.instagram.com/aljannahcentre/", target: "_blank" },
-  { label: "YouTube", url: "https://www.youtube.com/@al-jannahcentre5619", target: "_blank" },
 ];
 
 try {
@@ -87,6 +86,16 @@ try {
 } catch {
   // The fallback social links are the Centre's known official channels.
 }
+
+// Keep the retired channel out of existing CMS menus as well as local links.
+socialItems = socialItems.filter((item) => {
+  try {
+    const hostname = new URL(item.url).hostname.toLowerCase();
+    return !(hostname === "youtu.be" || hostname === "youtube.com" || hostname.endsWith(".youtube.com"));
+  } catch {
+    return item.label.toLowerCase() !== "youtube";
+  }
+});
 
 const currentPath = Astro.url.pathname;
 const fullTitle = title === siteTitle || title.includes(siteTitle)

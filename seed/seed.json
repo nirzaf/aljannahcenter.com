@@ -210,12 +210,6 @@
           "label": "Instagram",
           "url": "https://www.instagram.com/aljannahcentre/",
           "target": "_blank"
-        },
-        {
-          "type": "custom",
-          "label": "YouTube",
-          "url": "https://www.youtube.com/@al-jannahcentre5619",
-          "target": "_blank"
         }
       ]
     }

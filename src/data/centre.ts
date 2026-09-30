@@ -23,7 +23,6 @@ export const socialProfiles = [
   { platform: "TikTok", handle: "@aljannah.centre", href: "https://www.tiktok.com/@aljannah.centre" },
   { platform: "Facebook", handle: "Al - Jannah Centre", href: "https://www.facebook.com/aljannahcentre/" },
   { platform: "Instagram", handle: "@aljannahcentre", href: "https://www.instagram.com/aljannahcentre/" },
-  { platform: "YouTube", handle: "@al-jannahcentre5619", href: "https://www.youtube.com/@al-jannahcentre5619" },
 ];
 
 export const bankAccounts = [
