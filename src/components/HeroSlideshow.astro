@@ -1,0 +1,84 @@
+---
+import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
+
+const slides = [
+  { image: "community", title: "A community that cares", text: "Children, families and friends, growing together.", alt: "Children, staff and guests gathered at Al-Jannah Centre", width: 960, height: 720 },
+  { image: "creativity", title: "Room to create", text: "Discovering talents through art and everyday learning.", alt: "A child and teacher working on an art project at the Centre", width: 800, height: 800 },
+  { image: "artists", title: "Every ability deserves to shine", text: "Celebrating small steps and shared achievements.", alt: "Children painting together around a table at Al-Jannah Centre", width: 800, height: 800 },
+];
+---
+
+<div class="hero-slideshow" data-hero-slideshow role="region" aria-roledescription="carousel" aria-label="Life at Al-Jannah Centre" tabindex="0">
+  <div class="hero-slides">
+    {slides.map((slide, index) => (
+      <figure class:list={["hero-slide", { "is-active": index === 0 }]} data-slide aria-hidden={index !== 0} role="group" aria-roledescription="slide" aria-label={`${index + 1} of ${slides.length}`}>
+        <img src={`/hero/${slide.image}.webp`} alt={slide.alt} width={slide.width} height={slide.height} fetchpriority={index === 0 ? "high" : "auto"} loading={index === 0 ? "eager" : "lazy"} decoding="async" />
+        <figcaption><span>Life at the Centre</span><strong>{slide.title}</strong><p>{slide.text}</p></figcaption>
+      </figure>
+    ))}
+  </div>
+  <div class="hero-slide-controls" data-slide-controls hidden>
+    <button type="button" data-previous aria-label="Previous slide"><ChevronLeft size={20} aria-hidden="true" /></button>
+    <div class="hero-slide-dots" aria-label="Choose a slide">
+      {slides.map((slide, index) => <button type="button" data-slide-to={index} aria-label={`Show slide ${index + 1}: ${slide.title}`} aria-current={index === 0 ? "true" : undefined}><span /></button>)}
+    </div>
+    <button type="button" data-next aria-label="Next slide"><ChevronRight size={20} aria-hidden="true" /></button>
+    <button type="button" data-playback aria-label="Pause slideshow"><span data-pause-icon><Pause size={17} aria-hidden="true" /></span><span data-play-icon hidden><Play size={17} aria-hidden="true" /></span></button>
+  </div>
+  <span class="sr-only" data-slide-status aria-live="polite" aria-atomic="true"></span>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-hero-slideshow]").forEach((carousel) => {
+    const slides = Array.from(carousel.querySelectorAll<HTMLElement>("[data-slide]"));
+    const dots = Array.from(carousel.querySelectorAll<HTMLButtonElement>("[data-slide-to]"));
+    const playback = carousel.querySelector<HTMLButtonElement>("[data-playback]")!;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let current = 0;
+    let paused = reducedMotion.matches;
+    let hovered = false;
+    let focused = false;
+    let timer: ReturnType<typeof setInterval> | undefined;
+
+    const show = (index: number, announce = false) => {
+      current = (index + slides.length) % slides.length;
+      slides.forEach((slide, i) => {
+        slide.classList.toggle("is-active", i === current);
+        slide.setAttribute("aria-hidden", String(i !== current));
+      });
+      dots.forEach((dot, i) => {
+        if (i === current) dot.setAttribute("aria-current", "true");
+        else dot.removeAttribute("aria-current");
+      });
+      if (announce) carousel.querySelector<HTMLElement>("[data-slide-status]")!.textContent = `Slide ${current + 1} of ${slides.length}: ${slides[current].querySelector("strong")!.textContent}`;
+    };
+    const schedule = () => {
+      clearInterval(timer);
+      if (!paused && !hovered && !focused && !document.hidden) timer = setInterval(() => show(current + 1), 6000);
+      playback.setAttribute("aria-label", paused ? "Play slideshow" : "Pause slideshow");
+      carousel.querySelector<HTMLElement>("[data-pause-icon]")!.hidden = paused;
+      carousel.querySelector<HTMLElement>("[data-play-icon]")!.hidden = !paused;
+    };
+    const navigate = (index: number) => { show(index, true); schedule(); };
+    carousel.querySelector("[data-previous]")!.addEventListener("click", () => navigate(current - 1));
+    carousel.querySelector("[data-next]")!.addEventListener("click", () => navigate(current + 1));
+    dots.forEach((dot, index) => dot.addEventListener("click", () => navigate(index)));
+    playback.addEventListener("click", () => { paused = !paused; schedule(); });
+    carousel.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+        event.preventDefault();
+        navigate(current + (event.key === "ArrowRight" ? 1 : -1));
+      }
+    });
+    carousel.addEventListener("mouseenter", () => { hovered = true; schedule(); });
+    carousel.addEventListener("mouseleave", () => { hovered = false; schedule(); });
+    carousel.addEventListener("focusin", () => { focused = true; schedule(); });
+    carousel.addEventListener("focusout", (event) => {
+      if (!carousel.contains(event.relatedTarget as Node | null)) { focused = false; schedule(); }
+    });
+    document.addEventListener("visibilitychange", schedule);
+    reducedMotion.addEventListener("change", () => { paused = reducedMotion.matches; schedule(); });
+    carousel.querySelector<HTMLElement>("[data-slide-controls]")!.hidden = false;
+    schedule();
+  });
+</script>

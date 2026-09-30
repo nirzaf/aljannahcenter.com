@@ -116,7 +116,7 @@ function isActive(url: string) {
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#0f1f4d" />
     <title>{fullTitle}</title>
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -133,8 +133,10 @@ function isActive(url: string) {
     <header class="site-header" data-site-header>
       <div class="site-header-inner">
         <a class="brand" href="/" aria-label={siteTitle + " home"}>
-          <img class="brand-logo" src="/logo.webp" alt="" width="44" height="47" />
-          <span class="brand-text"><strong>Al-Jannah</strong><small>Centre</small></span>
+          <picture class="brand-image">
+            <source media="(min-width: 640px)" srcset="/ajc-wordmark.webp" width="1200" height="184" />
+            <img class="brand-logo" src="/ajc-crest.webp" alt="Al-Jannah Centre" width="256" height="272" />
+          </picture>
         </a>
 
         <nav class="primary-nav" aria-label="Primary navigation">
@@ -209,8 +211,7 @@ function isActive(url: string) {
       <div class="container footer-grid">
         <div class="footer-brand">
           <a class="brand brand-light" href="/" aria-label={siteTitle + " home"}>
-            <img class="brand-logo" src="/logo.webp" alt="" width="44" height="47" loading="lazy" />
-            <span class="brand-text"><strong>Al-Jannah</strong><small>Centre</small></span>
+            <img class="footer-logo" src="/ajc-wordmark.webp" alt="Al-Jannah Centre" width="1200" height="184" loading="lazy" />
           </a>
           <p>{siteTagline} {centre.tagline}, serving families in Kochchikade and Negombo since {centre.since}.</p>
           <div class="footer-social">

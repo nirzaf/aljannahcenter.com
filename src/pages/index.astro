@@ -11,10 +11,10 @@ import {
   Palette,
   Phone,
   Sparkles,
-  Star,
 } from "lucide-react";
 import { PhotoGallery } from "../components/PhotoGallery";
 import BrandIcon from "../components/BrandIcon.astro";
+import HeroSlideshow from "../components/HeroSlideshow.astro";
 import SocialHighlights from "../components/SocialHighlights.astro";
 import PostCard from "../components/PostCard.astro";
 import Base from "../layouts/Base.astro";
@@ -86,21 +86,7 @@ if (Astro.cache?.enabled && cacheHint) Astro.cache.set(cacheHint);
         </ul>
       </div>
 
-      <div class="hero-visual">
-        <figure class="hero-photo hero-photo-main">
-          <img src="/hero/welcome.webp" alt="The Welcome Al-Jannah Centre arch at the Centre entrance" width="960" height="1200" fetchpriority="high" />
-        </figure>
-        <figure class="hero-photo hero-photo-top">
-          <img src="/hero/creativity.webp" alt="A child and teacher working on an art project at the Centre" width="800" height="800" />
-        </figure>
-        <figure class="hero-photo hero-photo-bottom">
-          <img src="/hero/community.webp" alt="Children, staff and guests gathered for a group photo at the Centre" width="960" height="720" />
-        </figure>
-        <div class="hero-badge">
-          <Star size={18} aria-hidden="true" />
-          <span><strong>8 years</strong> of care &amp; community</span>
-        </div>
-      </div>
+      <HeroSlideshow />
     </div>
   </section>
 
