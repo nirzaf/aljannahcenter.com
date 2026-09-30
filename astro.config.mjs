@@ -1,6 +1,7 @@
 import cloudflare from "@astrojs/cloudflare";
 import react from "@astrojs/react";
 import { d1, r2 } from "@emdash-cms/cloudflare";
+import { cloudflareEmail } from "@emdash-cms/cloudflare/plugins";
 import { defineConfig, sessionDrivers } from "astro/config";
 import emdash from "emdash/astro";
 
@@ -19,7 +20,11 @@ export default defineConfig({
     emdash({
       database: d1({ binding: "DB" }),
       storage: r2({ binding: "MEDIA" }),
-      plugins: [],
+      plugins: [cloudflareEmail({
+        binding: "EMAIL",
+        from: { email: "login@cms.aljannahcentre.com", name: "Al-Jannah Centre" },
+        replyTo: "info@aljannahcentre.com",
+      })],
       marketplace: "https://marketplace.emdashcms.com",
     }),
   ],
