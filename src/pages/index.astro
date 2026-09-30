@@ -11,6 +11,7 @@ import SectionHeading from "../components/SectionHeading.astro";
 import PostCard from "../components/PostCard.astro";
 import BrandIcon from "../components/BrandIcon.astro";
 import { socialProfiles } from "../data/centre";
+import TikTokProfile from "../components/TikTokProfile.astro";
 
 let posts: any[] = [];
 let cacheHint: unknown;
@@ -77,5 +78,8 @@ if (Astro.cache?.enabled && cacheHint) Astro.cache.set(cacheHint);
         ))}
       </div>
     </div>
+  </section>
+  <section class="section section-tint" aria-label="Al-Jannah Centre on TikTok">
+    <div class="container"><TikTokProfile /></div>
   </section>
 </Base>

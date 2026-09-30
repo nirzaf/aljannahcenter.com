@@ -1,6 +1,7 @@
 ---
 import { ArrowRight } from "lucide-react";
 import { centre } from "../../data/centre";
+import HeroSlides from "./HeroSlides";
 ---
 
 <section class="hero" id="top">
@@ -34,15 +35,6 @@ import { centre } from "../../data/centre";
       </ul>
     </div>
 
-    <figure class="hero-photo">
-      <img
-        src="/hero/creativity.webp"
-        alt="Children sharing a craft activity at Al-Jannah Centre"
-        width="800"
-        height="800"
-        fetchpriority="high"
-        decoding="async"
-      />
-    </figure>
+    <HeroSlides client:load />
   </div>
 </section>

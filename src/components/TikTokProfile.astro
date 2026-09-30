@@ -1,0 +1,47 @@
+---
+import BrandIcon from "./BrandIcon.astro";
+---
+
+<div class="tiktok-profile">
+  <div class="tiktok-profile-copy">
+    <p class="kicker"><BrandIcon name="tiktok" size={18} /> From our TikTok</p>
+    <h3>Little moments. Big smiles.</h3>
+    <p>Follow Al-Jannah Centre for videos and moments from our community.</p>
+    <a class="text-link" href="https://www.tiktok.com/@aljannah.centre" target="_blank" rel="noopener noreferrer">Visit @aljannah.centre ↗</a>
+  </div>
+  <div class="tiktok-profile-embed" data-tiktok-profile>
+    <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@aljannah.centre" data-unique-id="aljannah.centre" data-embed-type="creator" data-embed-from="oembed" style="max-width: 720px; min-width: 288px;">
+      <section><a target="_blank" rel="noopener noreferrer" href="https://www.tiktok.com/@aljannah.centre?refer=creator_embed">@aljannah.centre on TikTok</a></section>
+    </blockquote>
+  </div>
+</div>
+
+<script>
+  const profiles = document.querySelectorAll<HTMLElement>("[data-tiktok-profile]");
+  const loadEmbed = () => {
+    if (document.querySelector('script[src="https://www.tiktok.com/embed.js"]')) return;
+    const script = document.createElement("script");
+    script.src = "https://www.tiktok.com/embed.js";
+    script.async = true;
+    document.body.appendChild(script);
+  };
+  if ("IntersectionObserver" in window) {
+    const observer = new IntersectionObserver((entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) {
+        loadEmbed();
+        observer.disconnect();
+      }
+    }, { rootMargin: "200px" });
+    profiles.forEach((profile) => observer.observe(profile));
+  } else loadEmbed();
+</script>
+
+<style>
+  .tiktok-profile { display: grid; gap: 2rem; align-items: center; padding-block: 2rem; }
+  .tiktok-profile-copy { max-width: 30rem; }
+  .kicker { display: flex; align-items: center; gap: .5rem; }
+  h3 { margin: .5rem 0 1rem; font-size: clamp(1.75rem, 3vw, 2.5rem); }
+  .tiktok-profile-embed { min-width: 0; overflow: hidden; }
+  .tiktok-embed { margin: 0 auto; border-radius: 1rem; }
+  @media (min-width: 900px) { .tiktok-profile { grid-template-columns: .8fr 1.2fr; } }
+</style>

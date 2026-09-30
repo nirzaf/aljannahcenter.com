@@ -11,7 +11,7 @@ export const centre = {
       "https://wa.me/94752223370?text=" +
       encodeURIComponent("Assalamu alaikum, I would like to support Al-Jannah Centre. Could you confirm the donation details?"),
   },
-  email: { label: "aljannahcentresrilanka@gmail.com", href: "mailto:aljannahcentresrilanka@gmail.com" },
+  email: { label: "info@aljannahcentre.com", href: "mailto:info@aljannahcentre.com" },
   address: {
     lines: ["20/A Negombo Road", "Kochchikade, Sri Lanka"],
     mapHref: "https://www.google.com/maps/search/?api=1&query=20%2FA%20Negombo%20Road%2C%20Kochchikade%2C%20Sri%20Lanka",
@@ -20,6 +20,7 @@ export const centre = {
 };
 
 export const socialProfiles = [
+  { platform: "TikTok", handle: "@aljannah.centre", href: "https://www.tiktok.com/@aljannah.centre" },
   { platform: "Facebook", handle: "Al - Jannah Centre", href: "https://www.facebook.com/aljannahcentre/" },
   { platform: "Instagram", handle: "@aljannahcentre", href: "https://www.instagram.com/aljannahcentre/" },
   { platform: "YouTube", handle: "@al-jannahcentre5619", href: "https://www.youtube.com/@al-jannahcentre5619" },
