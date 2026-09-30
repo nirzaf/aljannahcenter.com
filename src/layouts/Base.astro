@@ -46,11 +46,12 @@ const {
 let siteTitle = "Al-Jannah Centre";
 let siteTagline = "A place where every child can shine.";
 let primaryItems: NavItem[] = [
-  { label: "Home", url: "/" },
   { label: "About", url: "/pages/about" },
-  { label: "Updates", url: "/updates" },
-  { label: "Gallery", url: "/#gallery" },
-  { label: "Support", url: "/#support" },
+  { label: "Programmes", url: "/#programmes" },
+  { label: "Impact", url: "/#impact" },
+  { label: "Stories", url: "/updates" },
+  { label: "Gallery", url: "/gallery" },
+  { label: "Contact", url: "/#contact" },
 ];
 let socialItems: NavItem[] = [
   { label: "Facebook", url: "https://www.facebook.com/aljannahcentre/", target: "_blank" },
@@ -68,7 +69,14 @@ try {
 
 try {
   const menu = await getMenu("primary");
-  if (menu?.items?.length) primaryItems = menu.items as NavItem[];
+  if (menu?.items?.length) {
+    const items = menu.items as NavItem[];
+    // Upgrade the original seeded navigation without replacing custom CMS menus.
+    const legacyRoutes = ["/", "/pages/about", "/updates", "/#gallery", "/#support"];
+    const isLegacySeed = items.length === legacyRoutes.length &&
+      items.every((item, index) => item.url === legacyRoutes[index]);
+    if (!isLegacySeed) primaryItems = items;
+  }
 } catch {
   // Fall back to the local navigation until the seed is applied.
 }
@@ -114,7 +122,7 @@ function isActive(url: string) {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="theme-color" content="#0f1f4d" />
+    <meta name="theme-color" content="#20266e" />
     <title>{fullTitle}</title>
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -129,6 +137,16 @@ function isActive(url: string) {
   <body>
     <EmDashBodyStart page={pageContext} />
     <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <div class="utility-strip">
+      <div class="utility-strip-inner">
+        <p><MapPin size={14} aria-hidden="true" /> Kochchikade, Negombo, Sri Lanka</p>
+        <div class="utility-strip-links">
+          <a href={centre.phone.href}><Phone size={14} aria-hidden="true" /> {centre.phone.label}</a>
+          <a href={centre.whatsapp.href} target="_blank" rel="noopener noreferrer"><BrandIcon name="whatsapp" size={14} /> WhatsApp</a>
+        </div>
+      </div>
+    </div>
 
     <header class="site-header" data-site-header>
       <div class="site-header-inner">
@@ -151,19 +169,32 @@ function isActive(url: string) {
         </nav>
 
         <div class="header-actions">
-          <LiveSearch
-            placeholder="Search articles"
-            class="header-search"
-            inputClass="header-search-input"
-            resultsClass="header-search-results"
-            resultClass="header-search-result"
-            collections={["posts", "pages"]}
-            searchPage="/search"
-            routeMap={{ posts: "/posts/:path", pages: "/pages/:path" }}
-          />
+          <div class="header-search" data-header-search>
+            <button
+              class="search-toggle"
+              type="button"
+              aria-expanded="false"
+              aria-controls="header-search-pop"
+              data-search-toggle
+            >
+              <Search size={20} aria-hidden="true" />
+              <span class="sr-only">Search</span>
+            </button>
+            <div class="search-pop" id="header-search-pop" data-search-pop hidden>
+              <LiveSearch
+                placeholder="Search articles and pages"
+                inputClass="header-search-input"
+                resultsClass="header-search-results"
+                resultClass="header-search-result"
+                collections={["posts", "pages"]}
+                searchPage="/search"
+                routeMap={{ posts: "/posts/:path", pages: "/pages/:path" }}
+              />
+            </div>
+          </div>
           {isLoggedIn && <a class="header-admin" href="/_emdash/admin">Admin</a>}
           <a class="button button-gold header-donate" href="/#support">
-            <HandHeart size={18} aria-hidden="true" /> <span>Donate</span>
+            <HandHeart size={18} aria-hidden="true" /> <span>Support Us</span>
           </a>
           <button
             class="menu-toggle"
@@ -248,14 +279,16 @@ function isActive(url: string) {
     </footer>
 
     <nav class="action-bar" aria-label="Quick actions">
-      <a href={centre.phone.href}><Phone size={20} aria-hidden="true" /><span>Call</span></a>
       <a href={centre.whatsapp.href} target="_blank" rel="noopener noreferrer"><BrandIcon name="whatsapp" /><span>WhatsApp</span></a>
-      <a class="action-bar-primary" href="/#support"><HandHeart size={20} aria-hidden="true" /><span>Donate</span></a>
+      <a class="action-bar-primary" href="/#support"><HandHeart size={20} aria-hidden="true" /><span>Support Us</span></a>
     </nav>
 
     <EmDashBodyEnd page={pageContext} />
 
     <script>
+      // Progressive enhancement flag for the section-reveal styles.
+      document.documentElement.classList.add("js");
+
       const header = document.querySelector<HTMLElement>("[data-site-header]");
       const toggle = document.querySelector<HTMLButtonElement>("[data-menu-toggle]");
       const menu = document.querySelector<HTMLElement>("[data-mobile-menu]");
@@ -265,6 +298,10 @@ function isActive(url: string) {
         toggle.setAttribute("aria-expanded", String(open));
         menu.hidden = !open;
         document.documentElement.classList.toggle("menu-open", open);
+        document.querySelector<HTMLElement>("main")?.toggleAttribute("inert", open);
+        document.querySelector<HTMLElement>("footer")?.toggleAttribute("inert", open);
+        document.querySelector<HTMLElement>(".action-bar")?.toggleAttribute("inert", open);
+        if (open) menu.querySelector<HTMLAnchorElement>("a")?.focus();
       }
 
       toggle?.addEventListener("click", () => setMenu(toggle.getAttribute("aria-expanded") !== "true"));
@@ -272,6 +309,13 @@ function isActive(url: string) {
         if ((event.target as HTMLElement).closest("a")) setMenu(false);
       });
       document.addEventListener("keydown", (event) => {
+        if (event.key === "Tab" && toggle?.getAttribute("aria-expanded") === "true" && menu) {
+          const controls = [toggle, ...menu.querySelectorAll<HTMLElement>('a[href], input, button')];
+          const first = controls[0];
+          const last = controls[controls.length - 1];
+          if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+          else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+        }
         if (event.key === "Escape" && toggle?.getAttribute("aria-expanded") === "true") {
           setMenu(false);
           toggle.focus();
@@ -285,6 +329,50 @@ function isActive(url: string) {
       onScroll();
       window.addEventListener("scroll", onScroll, { passive: true });
 
+      // Header search popover.
+      const searchWrap = document.querySelector<HTMLElement>("[data-header-search]");
+      const searchToggle = document.querySelector<HTMLButtonElement>("[data-search-toggle]");
+      const searchPop = document.querySelector<HTMLElement>("[data-search-pop]");
+
+      function setSearch(open: boolean) {
+        if (!searchToggle || !searchPop) return;
+        searchToggle.setAttribute("aria-expanded", String(open));
+        searchPop.hidden = !open;
+        if (open) searchPop.querySelector("input")?.focus();
+      }
+
+      searchToggle?.addEventListener("click", () => setSearch(searchPop?.hidden !== false));
+      document.addEventListener("click", (event) => {
+        if (searchWrap && !searchWrap.contains(event.target as Node) && searchPop && !searchPop.hidden) {
+          setSearch(false);
+        }
+      });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && searchPop && !searchPop.hidden) {
+          setSearch(false);
+          searchToggle?.focus();
+        }
+      });
+
+      // Gentle section reveal on scroll.
+      const revealEls = document.querySelectorAll("[data-reveal]");
+      if ("IntersectionObserver" in window) {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("is-visible");
+                observer.unobserve(entry.target);
+              }
+            }
+          },
+          { threshold: 0.1, rootMargin: "0px 0px -6% 0px" },
+        );
+        revealEls.forEach((el) => observer.observe(el));
+      } else {
+        revealEls.forEach((el) => el.classList.add("is-visible"));
+      }
+
       // Copy buttons, used for bank account details.
       document.addEventListener("click", async (event) => {
         const button = (event.target as HTMLElement).closest<HTMLButtonElement>("[data-copy]");
@@ -297,8 +385,13 @@ function isActive(url: string) {
           field.value = value;
           document.body.appendChild(field);
           field.select();
-          document.execCommand("copy");
+          const copied = document.execCommand("copy");
           field.remove();
+          if (!copied) {
+            const label = button.querySelector("[data-copy-label]");
+            if (label) label.textContent = "Try again";
+            return;
+          }
         }
         const label = button.querySelector("[data-copy-label]");
         const original = label?.textContent;

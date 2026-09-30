@@ -1,0 +1,77 @@
+---
+import { ArrowRight } from "lucide-react";
+import SectionHeading from "../SectionHeading.astro";
+
+// A curated editorial preview — the full gallery lives on /gallery.
+const previewPhotos = [
+  {
+    area: "a",
+    src: "/hero/community.webp",
+    alt: "Children, families and staff gathered in front of the Al-Jannah Centre crest wall",
+    width: 960,
+    height: 720,
+  },
+  {
+    area: "b",
+    src: "/gallery/thumbs/photo-024.webp",
+    alt: "A teacher demonstrating sign language in front of alphabet charts",
+    width: 480,
+    height: 480,
+  },
+  {
+    area: "c",
+    src: "/gallery/thumbs/photo-016.webp",
+    alt: "A child stacking colourful building blocks at an activity table",
+    width: 480,
+    height: 480,
+  },
+  {
+    area: "d",
+    src: "/gallery/thumbs/photo-006.webp",
+    alt: "Children’s flower paintings displayed at the Centre’s exhibition stall",
+    width: 480,
+    height: 480,
+  },
+  {
+    area: "e",
+    src: "/gallery/thumbs/photo-028.webp",
+    alt: "Visitors touring the Centre’s exhibition stall beneath a rainbow mural",
+    width: 480,
+    height: 480,
+  },
+];
+---
+
+<section class="section section-tint" id="gallery" aria-labelledby="gallery-preview-title">
+  <div class="container" data-reveal>
+    <SectionHeading
+      kicker="Life at Al-Jannah"
+      titleId="gallery-preview-title"
+      title="Glimpses from our days."
+      description="Classroom creativity, celebrations and community days — a small selection from the Centre’s photo gallery."
+    />
+    <div class="bento">
+      {previewPhotos.map((photo) => (
+        <a
+          class={"bento-tile bento-" + photo.area}
+          href="/gallery"
+          aria-label={photo.alt + " — view the gallery"}
+        >
+          <img
+            src={photo.src}
+            alt={photo.alt}
+            width={photo.width}
+            height={photo.height}
+            loading="lazy"
+            decoding="async"
+          />
+        </a>
+      ))}
+    </div>
+    <div class="bento-footer">
+      <a class="text-link" href="/gallery">
+        View all photos <ArrowRight size={17} aria-hidden="true" />
+      </a>
+    </div>
+  </div>
+</section>

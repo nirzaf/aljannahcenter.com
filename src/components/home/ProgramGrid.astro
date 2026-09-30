@@ -1,0 +1,51 @@
+---
+import { ArrowRight, BookOpen, HeartHandshake, Palette, Sparkles } from "lucide-react";
+import SectionHeading from "../SectionHeading.astro";
+
+const focusAreas = [
+  {
+    icon: BookOpen,
+    title: "Education",
+    text: "Learning that meets each child where they are, building confidence one step at a time.",
+  },
+  {
+    icon: HeartHandshake,
+    title: "Therapy",
+    text: "Support that helps children grow in communication, movement and independence.",
+  },
+  {
+    icon: Palette,
+    title: "Vocational skills",
+    text: "Art, craft and practical skills that turn talents into pride and possibility.",
+  },
+  {
+    icon: Sparkles,
+    title: "Faith & values",
+    text: "Celebrating every child’s abilities, faith and values together with their families.",
+  },
+];
+---
+
+<section class="section" id="programmes" aria-labelledby="programmes-title">
+  <div class="container" data-reveal>
+    <SectionHeading
+      kicker="What we do"
+      titleId="programmes-title"
+      title="Celebrating abilities, talents, faiths and values."
+      description="The Centre’s work spans education, therapy and vocational training for children with special needs. For programme, admission and visit enquiries, please speak with the Centre directly."
+    />
+    <div class="program-grid">
+      {focusAreas.map(({ icon: Icon, title, text }, index) => (
+        <article class="program-card">
+          <p class="program-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</p>
+          <span class="program-icon"><Icon size={22} aria-hidden="true" /></span>
+          <h3>{title}</h3>
+          <p>{text}</p>
+          <a class="text-link program-link" href="/pages/about">
+            Learn more <ArrowRight size={15} aria-hidden="true" />
+          </a>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

@@ -35,6 +35,21 @@ Built with [Astro](https://astro.build) and the [EmDash](https://emdashcms.com) 
 
 Articles, updates and pages are edited in the EmDash admin at `/_emdash/admin`.
 
+The redesign adds an **Impact milestones** collection with `value`, `label`, and
+`position` fields. Published milestones appear in display order on the homepage.
+Apply the updated `seed/seed.json` to the site's CMS database to create this
+collection. The deployment workflow validates the seed but does not apply it to
+production. Until the collection is available, the homepage uses the three
+existing milestones as a fallback. Keep published achievements source-verified.
+
+## Design system
+
+The official indigo palette (`#20266E` / `#2B3176`) lives in `site.css`, alongside
+neutral, gold, spacing, and radius tokens. Original logo colours are preserved.
+Homepage sections live in `src/components/home/`; `/gallery` retains the React
+lightbox with `client:visible` hydration. The static hero prioritizes one authentic
+photograph, while updates, articles and CMS pages share the same visual language.
+
 ## Deployment
 
 Pushes to `main` run `.github/workflows/deploy.yml`, which installs, validates the seed, type-checks, builds and deploys with Wrangler. The deploy step needs a `CLOUDFLARE_API_TOKEN` repository secret for the Cloudflare account that hosts the site.

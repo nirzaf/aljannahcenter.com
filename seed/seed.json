@@ -15,7 +15,12 @@
       "slug": "posts",
       "label": "Articles & Posts",
       "labelSingular": "Article",
-      "supports": ["drafts", "revisions", "search", "seo"],
+      "supports": [
+        "drafts",
+        "revisions",
+        "search",
+        "seo"
+      ],
       "fields": [
         {
           "slug": "title",
@@ -46,7 +51,12 @@
       "slug": "pages",
       "label": "Pages",
       "labelSingular": "Page",
-      "supports": ["drafts", "revisions", "search", "seo"],
+      "supports": [
+        "drafts",
+        "revisions",
+        "search",
+        "seo"
+      ],
       "fields": [
         {
           "slug": "title",
@@ -62,6 +72,35 @@
           "searchable": true
         }
       ]
+    },
+    {
+      "slug": "impact",
+      "label": "Impact milestones",
+      "labelSingular": "Impact milestone",
+      "supports": [
+        "drafts",
+        "revisions"
+      ],
+      "fields": [
+        {
+          "slug": "value",
+          "label": "Display value",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "label",
+          "label": "Verified achievement",
+          "type": "text",
+          "required": true
+        },
+        {
+          "slug": "position",
+          "label": "Display order",
+          "type": "number",
+          "required": true
+        }
+      ]
     }
   ],
   "taxonomies": [
@@ -70,11 +109,22 @@
       "label": "Categories",
       "labelSingular": "Category",
       "hierarchical": true,
-      "collections": ["posts"],
+      "collections": [
+        "posts"
+      ],
       "terms": [
-        { "slug": "centre-updates", "label": "Centre updates" },
-        { "slug": "community", "label": "Community" },
-        { "slug": "achievements", "label": "Achievements" }
+        {
+          "slug": "centre-updates",
+          "label": "Centre updates"
+        },
+        {
+          "slug": "community",
+          "label": "Community"
+        },
+        {
+          "slug": "achievements",
+          "label": "Achievements"
+        }
       ]
     },
     {
@@ -82,11 +132,22 @@
       "label": "Tags",
       "labelSingular": "Tag",
       "hierarchical": false,
-      "collections": ["posts"],
+      "collections": [
+        "posts"
+      ],
       "terms": [
-        { "slug": "al-jannah-centre", "label": "Al-Jannah Centre" },
-        { "slug": "children", "label": "Children" },
-        { "slug": "skills", "label": "Skills" }
+        {
+          "slug": "al-jannah-centre",
+          "label": "Al-Jannah Centre"
+        },
+        {
+          "slug": "children",
+          "label": "Children"
+        },
+        {
+          "slug": "skills",
+          "label": "Skills"
+        }
       ]
     }
   ],
@@ -102,11 +163,36 @@
       "name": "primary",
       "label": "Primary navigation",
       "items": [
-        { "type": "custom", "label": "Home", "url": "/" },
-        { "type": "custom", "label": "About", "url": "/pages/about" },
-        { "type": "custom", "label": "Updates", "url": "/updates" },
-        { "type": "custom", "label": "Gallery", "url": "/#gallery" },
-        { "type": "custom", "label": "Support", "url": "/#support" }
+        {
+          "type": "custom",
+          "label": "About",
+          "url": "/pages/about"
+        },
+        {
+          "type": "custom",
+          "label": "Programmes",
+          "url": "/#programmes"
+        },
+        {
+          "type": "custom",
+          "label": "Impact",
+          "url": "/#impact"
+        },
+        {
+          "type": "custom",
+          "label": "Stories",
+          "url": "/updates"
+        },
+        {
+          "type": "custom",
+          "label": "Gallery",
+          "url": "/gallery"
+        },
+        {
+          "type": "custom",
+          "label": "Contact",
+          "url": "/#contact"
+        }
       ]
     },
     {
@@ -171,6 +257,38 @@
         }
       }
     ],
-    "posts": []
+    "posts": [],
+    "impact": [
+      {
+        "id": "opened",
+        "slug": "opened",
+        "status": "published",
+        "data": {
+          "value": "2018",
+          "label": "Serving children and families since the Centre opened",
+          "position": 1
+        }
+      },
+      {
+        "id": "scholarship",
+        "slug": "scholarship",
+        "status": "published",
+        "data": {
+          "value": "4",
+          "label": "students sat the Grade 5 Scholarship Examination in 2026",
+          "position": 2
+        }
+      },
+      {
+        "id": "exhibition",
+        "slug": "exhibition",
+        "status": "published",
+        "data": {
+          "value": "42nd",
+          "label": "National Meelad-un-Nabi Cultural Exhibition with Al-Jannah stalls",
+          "position": 3
+        }
+      }
+    ]
   }
 }

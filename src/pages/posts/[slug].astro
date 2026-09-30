@@ -1,8 +1,10 @@
 ---
-import { decodeSlug, getEmDashEntry } from "emdash";
+import { decodeSlug, getEmDashCollection, getEmDashEntry } from "emdash";
 import { Image, PortableText } from "emdash/ui";
 import { ArrowLeft, HandHeart, Phone } from "lucide-react";
 import Base from "../../layouts/Base.astro";
+import BrandIcon from "../../components/BrandIcon.astro";
+import PostCard from "../../components/PostCard.astro";
 import { getReadingTime } from "../../utils/reading-time";
 
 const slug = Astro.params.slug ? decodeSlug(Astro.params.slug) : null;
@@ -17,6 +19,25 @@ const author = (post.data.bylines ?? [])
   .map((credit) => credit.byline.displayName)
   .join(", ") || null;
 const readingTime = getReadingTime(post.data.content);
+
+// Share links (simple outbound links — no third-party embeds).
+const shareUrl = new URL(Astro.url.pathname, Astro.url).toString();
+const facebookShareHref =
+  "https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(shareUrl);
+const whatsappShareHref =
+  "https://wa.me/?text=" + encodeURIComponent(post.data.title + " " + shareUrl);
+
+let related: any[] = [];
+try {
+  const result = await getEmDashCollection("posts", {
+    orderBy: { published_at: "desc" },
+    limit: 4,
+  });
+  related = result.entries.filter((entry: any) => entry.id !== post.id).slice(0, 3);
+  if (Astro.cache?.enabled && result.cacheHint) Astro.cache.set(result.cacheHint);
+} catch {
+  // Related stories are optional; the article renders without them.
+}
 ---
 
 <Base
@@ -29,9 +50,9 @@ const readingTime = getReadingTime(post.data.content);
   content={{ collection: "posts", id: post.data.id, slug }}
 >
   <article class="container article">
-    <a class="back-link" href="/updates"><ArrowLeft size={16} aria-hidden="true" /> All updates</a>
+    <a class="back-link" href="/updates"><ArrowLeft size={16} aria-hidden="true" /> All stories</a>
     <header class="article-header">
-      <p class="kicker">Al-Jannah Centre · Update</p>
+      <p class="kicker">Centre update</p>
       <h1>{post.data.title}</h1>
       <div class="article-meta">
         {post.data.publishedAt && (
@@ -50,8 +71,19 @@ const readingTime = getReadingTime(post.data.content);
     )}
 
     <div class="article-layout">
-      <div class="prose">
-        <PortableText value={post.data.content ?? []} />
+      <div class="article-main">
+        <div class="prose">
+          <PortableText value={post.data.content ?? []} />
+        </div>
+        <div class="share-row">
+          <span>Share</span>
+          <a href={facebookShareHref} target="_blank" rel="noopener noreferrer">
+            <BrandIcon name="facebook" size={16} /> Facebook
+          </a>
+          <a href={whatsappShareHref} target="_blank" rel="noopener noreferrer">
+            <BrandIcon name="whatsapp" size={16} /> WhatsApp
+          </a>
+        </div>
       </div>
       <aside class="article-aside" aria-label="Get involved">
         <p>Inspired by this story?</p>
@@ -59,5 +91,24 @@ const readingTime = getReadingTime(post.data.content);
         <a class="button button-outline" href="/#contact"><Phone size={16} aria-hidden="true" /> Contact us</a>
       </aside>
     </div>
+
+    {related.length > 0 && (
+      <section class="related" aria-labelledby="related-title">
+        <h2 id="related-title">More from the Centre</h2>
+        <div class="post-grid">
+          {related.map((entry: any) => (
+            <PostCard
+              title={entry.data.title}
+              excerpt={entry.data.excerpt}
+              content={entry.data.content}
+              featuredImage={entry.data.featured_image}
+              href={"/posts/" + entry.id}
+              date={entry.data.publishedAt}
+              bylines={entry.data.bylines}
+            />
+          ))}
+        </div>
+      </section>
+    )}
   </article>
 </Base>

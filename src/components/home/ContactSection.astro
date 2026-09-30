@@ -1,0 +1,29 @@
+---
+import { Mail, MapPin, Phone } from "lucide-react";
+import BrandIcon from "../BrandIcon.astro";
+import { centre } from "../../data/centre";
+---
+
+<section class="section" id="contact" aria-labelledby="contact-title">
+  <div class="container contact-inner">
+    <div class="contact-copy" data-reveal>
+      <p class="kicker">Get in touch</p>
+      <h2 id="contact-title">We’re here to connect.</h2>
+      <p>Reach out for enquiries, admissions, visits and support. WhatsApp is often the quickest way to reach the team.</p>
+      <div class="contact-list">
+        <a href={centre.phone.href}><span class="contact-icon"><Phone size={20} aria-hidden="true" /></span><span><small>Call</small><strong>{centre.phone.label}</strong></span></a>
+        <a href={centre.whatsapp.href} target="_blank" rel="noopener noreferrer"><span class="contact-icon contact-icon-wa"><BrandIcon name="whatsapp" /></span><span><small>WhatsApp</small><strong>{centre.whatsapp.label}</strong></span></a>
+        <a href={centre.email.href}><span class="contact-icon"><Mail size={20} aria-hidden="true" /></span><span><small>Email</small><strong class="break">{centre.email.label}</strong></span></a>
+        <a href={centre.address.mapHref} target="_blank" rel="noopener noreferrer"><span class="contact-icon"><MapPin size={20} aria-hidden="true" /></span><span><small>Visit</small><strong>{centre.address.lines.join(", ")}</strong></span></a>
+      </div>
+    </div>
+    <div class="map-card">
+      <iframe
+        title="Map showing Al-Jannah Centre, 20/A Negombo Road, Kochchikade"
+        src={centre.address.embedSrc}
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+      ></iframe>
+    </div>
+  </div>
+</section>

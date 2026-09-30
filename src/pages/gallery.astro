@@ -1,0 +1,29 @@
+---
+import Base from "../layouts/Base.astro";
+import { PhotoGallery } from "../components/PhotoGallery";
+---
+
+<Base
+  title="Gallery"
+  description="Photos from daily life at Al-Jannah Centre — classroom creativity, celebrations and community days in Kochchikade, Negombo."
+>
+  <header class="page-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/">Home</a>
+        <span class="sep" aria-hidden="true">/</span>
+        <span aria-current="page">Gallery</span>
+      </nav>
+      <p class="kicker">Life at Al-Jannah</p>
+      <h1>Gallery</h1>
+      <p>
+        Classroom creativity, celebrations and community days, shared from the Centre’s
+        official channels.
+      </p>
+    </div>
+  </header>
+
+  <div class="page-body">
+    <PhotoGallery client:visible />
+  </div>
+</Base>

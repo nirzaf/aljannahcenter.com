@@ -1,0 +1,48 @@
+---
+import { ArrowRight } from "lucide-react";
+import { centre } from "../../data/centre";
+---
+
+<section class="hero" id="top">
+  <div class="container hero-inner">
+    <div class="hero-copy">
+      <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true" /> Supporting children since {centre.since}</p>
+      <h1>Every child deserves the space to learn, grow and <em>shine</em>.</h1>
+      <p class="hero-lede">
+        Al-Jannah Centre supports children with special needs and skills through education,
+        therapy, vocational development and a caring community in Kochchikade, Negombo.
+      </p>
+      <div class="hero-actions">
+        <a class="button button-primary button-lg" href="#programmes">
+          Explore our programmes <ArrowRight size={18} aria-hidden="true" />
+        </a>
+        <a class="button button-gold button-lg" href="#support">Support Al-Jannah</a>
+      </div>
+      <a
+        class="text-link hero-whatsapp"
+        href={centre.whatsapp.href}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Talk to us on WhatsApp <ArrowRight size={16} aria-hidden="true" />
+      </a>
+      <ul class="hero-tags" aria-label="Areas of focus">
+        <li>Education</li>
+        <li>Therapy</li>
+        <li>Vocational skills</li>
+        <li>Faith &amp; values</li>
+      </ul>
+    </div>
+
+    <figure class="hero-photo">
+      <img
+        src="/hero/creativity.webp"
+        alt="Children sharing a craft activity at Al-Jannah Centre"
+        width="800"
+        height="800"
+        fetchpriority="high"
+        decoding="async"
+      />
+    </figure>
+  </div>
+</section>

@@ -1,0 +1,58 @@
+---
+import { ArrowRight } from "lucide-react";
+import { getEmDashCollection } from "emdash";
+
+// Seeded in the Impact milestones collection; fallbacks keep a new site usable.
+let impactStats = [
+  { value: "2018", label: "Serving children and families since the Centre opened" },
+  { value: "4", label: "students sat the Grade 5 Scholarship Examination in 2026" },
+  { value: "42nd", label: "National Meelad-un-Nabi Cultural Exhibition with Al-Jannah stalls" },
+];
+try {
+  const result = await getEmDashCollection("impact", {
+    orderBy: { position: "asc" },
+    limit: 6,
+  });
+  const published = result.entries
+    .filter((entry) => typeof entry.data.value === "string" && typeof entry.data.label === "string")
+    .map((entry) => ({ value: entry.data.value as string, label: entry.data.label as string }));
+  if (published.length) impactStats = published;
+  if (Astro.cache?.enabled && result.cacheHint) Astro.cache.set(result.cacheHint);
+} catch {
+  // The CMS collection is optional until the updated seed is applied.
+}
+---
+
+<section class="section story" id="impact" aria-labelledby="impact-title">
+  <div class="container story-inner">
+    <figure class="story-photo">
+      <img
+        src="/hero/artists.webp"
+        alt="Children painting together around a table at Al-Jannah Centre"
+        width="800"
+        height="800"
+        loading="lazy"
+        decoding="async"
+      />
+    </figure>
+    <div class="story-copy" data-reveal>
+      <p class="kicker">Our impact</p>
+      <h2 id="impact-title">Small steps. Big achievements.</h2>
+      <p>
+        From classroom art to national exhibitions and exam halls, every milestone at the Centre is
+        shared by the children, their teachers and their families.
+      </p>
+      <dl class="impact-stats">
+        {impactStats.map((item) => (
+          <div class="impact-stat">
+            <dt>{item.value}</dt>
+            <dd>{item.label}</dd>
+          </div>
+        ))}
+      </dl>
+      <a class="text-link" href="/pages/about">
+        About Al-Jannah <ArrowRight size={17} aria-hidden="true" />
+      </a>
+    </div>
+  </div>
+</section>

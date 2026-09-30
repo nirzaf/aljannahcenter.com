@@ -1,0 +1,30 @@
+---
+import { ArrowRight } from "lucide-react";
+
+interface Props {
+  kicker: string;
+  title: string;
+  titleId?: string;
+  description?: string;
+  link?: { href: string; label: string };
+}
+
+const { kicker, title, titleId, description, link } = Astro.props;
+---
+
+<div class="section-heading">
+  <div>
+    <p class="kicker">{kicker}</p>
+    <h2 id={titleId}>{title}</h2>
+  </div>
+  {(description || link) && (
+    <div class="section-heading-side">
+      {description && <p>{description}</p>}
+      {link && (
+        <a class="text-link" href={link.href}>
+          {link.label} <ArrowRight size={17} aria-hidden="true" />
+        </a>
+      )}
+    </div>
+  )}
+</div>

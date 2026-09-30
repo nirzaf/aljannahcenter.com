@@ -4,6 +4,7 @@ import { getEmDashCollection } from "emdash";
 import Base from "../layouts/Base.astro";
 import EmptyUpdates from "../components/EmptyUpdates.astro";
 import PostCard from "../components/PostCard.astro";
+import SocialHighlights from "../components/SocialHighlights.astro";
 
 let posts: any[] = [];
 let cacheHint: unknown;
@@ -27,8 +28,13 @@ const isLoggedIn = Boolean(Astro.locals.user);
 >
   <header class="page-hero">
     <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/">Home</a>
+        <span class="sep" aria-hidden="true">/</span>
+        <span aria-current="page">Stories</span>
+      </nav>
       <p class="kicker">From the Centre</p>
-      <h1>Centre updates</h1>
+      <h1>Stories & updates</h1>
       <p>Daily notes, weekly roundups, programme announcements and stories from the children, families and team at Al-Jannah Centre.</p>
       <div class="page-hero-actions">
         {isLoggedIn && <a class="button button-primary" href="/_emdash/admin"><PenLine size={17} aria-hidden="true" /> Publish an update</a>}
@@ -75,4 +81,6 @@ const isLoggedIn = Boolean(Astro.locals.user);
       <EmptyUpdates isLoggedIn={isLoggedIn} />
     )}
   </div>
+
+  <SocialHighlights />
 </Base>

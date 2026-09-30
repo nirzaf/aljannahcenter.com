@@ -1,7 +1,7 @@
 ---
 import { decodeSlug, getEmDashEntry } from "emdash";
 import { PortableText } from "emdash/ui";
-import { ArrowLeft, HandHeart } from "lucide-react";
+import { HandHeart } from "lucide-react";
 import Base from "../../layouts/Base.astro";
 import BrandIcon from "../../components/BrandIcon.astro";
 import { centre } from "../../data/centre";
@@ -41,7 +41,11 @@ const title = page ? page.data.title : fallback!.title;
 >
   <header class="page-hero">
     <div class="container">
-      <a class="back-link" href="/"><ArrowLeft size={16} aria-hidden="true" /> Back to home</a>
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/">Home</a>
+        <span class="sep" aria-hidden="true">/</span>
+        <span aria-current="page">{title}</span>
+      </nav>
       <p class="kicker">The Centre</p>
       <h1>{title}</h1>
     </div>

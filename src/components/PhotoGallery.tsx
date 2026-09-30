@@ -85,7 +85,7 @@ export function PhotoGallery() {
           </div>
           <p>
             Classroom creativity, celebrations and community days, shared from the Centre’s
-            official channels with permission from the Centre and guardians.
+            official channels.
           </p>
         </div>
 

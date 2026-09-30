@@ -1,0 +1,67 @@
+---
+import { Copy } from "lucide-react";
+import BrandIcon from "../BrandIcon.astro";
+import { bankAccounts, centre } from "../../data/centre";
+---
+
+<section class="support" id="support" aria-labelledby="support-title">
+  <div class="container support-inner">
+    <div class="support-copy" data-reveal>
+      <p class="kicker kicker-light">Support Al-Jannah</p>
+      <h2 id="support-title">Your support helps make room for possibility.</h2>
+      <p>
+        Every contribution helps create opportunities for children to learn, develop their
+        abilities and take part in meaningful experiences. Please contact the Centre before
+        giving so they can confirm the details with you.
+      </p>
+      <ul class="give-help">
+        <li>Learning materials and classroom support</li>
+        <li>Therapy, activities and vocational training</li>
+        <li>Care, meals and special celebrations</li>
+      </ul>
+      <div class="support-actions">
+        <a
+          class="button button-gold button-lg"
+          href={centre.whatsapp.donationHref}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <BrandIcon name="whatsapp" /> Confirm on WhatsApp
+        </a>
+        <a class="button button-ghost-light" href="/support-poster.webp" target="_blank" rel="noopener">
+          View support poster
+        </a>
+      </div>
+    </div>
+
+    <div class="accounts">
+      {bankAccounts.map((item) => (
+        <article class="account-card">
+          <header class="account-head">
+            <span class="account-mark" aria-hidden="true">AJ</span>
+            <div><small>Bank</small><strong>{item.bank}</strong></div>
+          </header>
+          <div class="account-number">
+            <div>
+              <small>Account number</small>
+              <strong>{item.account}</strong>
+            </div>
+            <button
+              class="copy-button"
+              type="button"
+              data-copy={item.account.replace(/-/g, "")}
+              aria-label={"Copy " + item.bank + " account number"}
+            >
+              <Copy size={16} aria-hidden="true" /> <span data-copy-label aria-live="polite">Copy</span>
+            </button>
+          </div>
+          <dl>
+            <div><dt>Account name</dt><dd>Al-Jannah Centre</dd></div>
+            <div><dt>Branch</dt><dd>{item.branch}</dd></div>
+            <div><dt>SWIFT</dt><dd>{item.swift}</dd></div>
+          </dl>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
