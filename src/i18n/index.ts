@@ -1,19 +1,22 @@
+import { ar } from "./ar";
 import { en } from "./en";
 import type { Dictionary, TranslationKey } from "./en";
 import { si } from "./si";
 import { ta } from "./ta";
 
+// `glyph` is a letter from the language's own script, used as its icon in the switcher.
 export const languages = {
-  en: { label: "English", short: "EN", dateLocale: "en-GB" },
-  ta: { label: "தமிழ்", short: "தமிழ்", dateLocale: "ta-LK" },
-  si: { label: "සිංහල", short: "සිංහල", dateLocale: "si-LK" },
+  en: { label: "English", glyph: "A", dir: "ltr", dateLocale: "en-GB" },
+  ta: { label: "தமிழ்", glyph: "அ", dir: "ltr", dateLocale: "ta-LK" },
+  si: { label: "සිංහල", glyph: "අ", dir: "ltr", dateLocale: "si-LK" },
+  ar: { label: "العربية", glyph: "ع", dir: "rtl", dateLocale: "ar" },
 } as const;
 
 export type Lang = keyof typeof languages;
 export const defaultLang: Lang = "en";
-export const translatedLangs: Lang[] = ["ta", "si"];
+export const translatedLangs: Lang[] = ["ta", "si", "ar"];
 
-const dictionaries: Record<Lang, Dictionary> = { en, ta, si };
+const dictionaries: Record<Lang, Dictionary> = { en, ta, si, ar };
 
 export const isLang = (value: unknown): value is Lang => typeof value === "string" && value in languages;
 

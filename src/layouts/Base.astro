@@ -8,7 +8,7 @@ import {
 } from "emdash/ui";
 import LiveSearch from "emdash/ui/search";
 import { createPublicPageContext } from "emdash/page";
-import { HandHeart, Mail, MapPin, Menu, Phone, Search, X } from "lucide-react";
+import { Check, ChevronDown, HandHeart, Languages, Mail, MapPin, Menu, Phone, Search, X } from "lucide-react";
 import BrandIcon from "../components/BrandIcon.astro";
 import { centre } from "../data/centre";
 import { defaultLang, getLang, languages, localePath, stripLang, useTranslations } from "../i18n";
@@ -133,12 +133,22 @@ const year = new Date().getFullYear();
 const alternates = (Object.keys(languages) as Lang[]).map((code) => ({
   code,
   label: languages[code].label,
+  glyph: languages[code].glyph,
   href: localePath(code, currentPath + Astro.url.search),
 }));
 const fontHref: Partial<Record<Lang, string>> = {
   ta: "https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@400..800&family=Noto+Serif+Tamil:wght@400..600&display=swap",
   si: "https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400..800&family=Noto+Serif+Sinhala:wght@400..600&display=swap",
+  ar: "https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400..700&family=Noto+Sans+Arabic:wght@400..800&display=swap",
 };
+
+// First visit only: visitors whose device is set to Tamil, Sinhala or Arabic are taken
+// to that version. English stays the default for everyone else, and a language picked
+// from the menu is remembered and always wins.
+const autoLangTargets =
+  isDefaultLang && !currentPath.startsWith("/admin")
+    ? Object.fromEntries(alternates.filter((item) => item.code !== defaultLang).map((item) => [item.code, item.href]))
+    : null;
 
 function isActive(url: string) {
   url = stripLang(url);
@@ -149,9 +159,21 @@ function isActive(url: string) {
 ---
 
 <!doctype html>
-<html lang={lang}>
+<html lang={lang} dir={languages[lang].dir}>
   <head>
     <meta charset="UTF-8" />
+    {autoLangTargets && (
+      <script is:inline define:vars={{ autoLangTargets }}>
+        try {
+          if (!localStorage.getItem("ajc-lang")) {
+            var deviceLang = (navigator.language || "").toLowerCase().split("-")[0];
+            if (autoLangTargets[deviceLang]) location.replace(autoLangTargets[deviceLang] + location.hash);
+          }
+        } catch (error) {
+          // Storage can be blocked; the page simply stays in English.
+        }
+      </script>
+    )}
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#20266e" />
     <title>{fullTitle}</title>
@@ -177,11 +199,6 @@ function isActive(url: string) {
       <div class="utility-strip-inner">
         <p><MapPin size={14} aria-hidden="true" /> {t("site.location")}</p>
         <div class="utility-strip-links">
-          <nav class="lang-switch" aria-label={t("site.language")}>
-            {alternates.map((item) => (
-            <a href={item.href} lang={item.code} hreflang={item.code} aria-current={item.code === lang ? "true" : undefined}>{item.label}</a>
-          ))}
-          </nav>
           <a href={centre.phone.href}><Phone size={14} aria-hidden="true" /> {centre.phone.label}</a>
           <a href={centre.whatsapp.href} target="_blank" rel="noopener noreferrer"><BrandIcon name="whatsapp" size={14} /> WhatsApp</a>
         </div>
@@ -238,6 +255,24 @@ function isActive(url: string) {
               />
             </div>
           </div>
+          <details class="lang-menu" data-lang-menu>
+            <summary aria-label={t("site.language") + ": " + languages[lang].label}>
+              <Languages size={19} aria-hidden="true" />
+              <span class="lang-menu-current" aria-hidden="true">{languages[lang].label}</span>
+              <ChevronDown size={15} className="lang-menu-caret" aria-hidden="true" />
+            </summary>
+            <ul class="lang-menu-list">
+              {alternates.map((item) => (
+                <li>
+                  <a href={item.href} lang={item.code} hreflang={item.code} aria-current={item.code === lang ? "true" : undefined}>
+                    <span class="lang-glyph" aria-hidden="true">{item.glyph}</span>
+                    <span>{item.label}</span>
+                    {item.code === lang && <Check size={16} className="lang-menu-check" aria-hidden="true" />}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </details>
           {isLoggedIn && <a class="header-admin" href="/admin">{t("common.staffDesk")}</a>}
           <a class="button button-gold header-donate" href={link("/#support")}>
             <HandHeart size={18} aria-hidden="true" /> <span>{t("common.supportUs")}</span>
@@ -259,7 +294,9 @@ function isActive(url: string) {
       <div class="mobile-menu" id="mobile-menu" data-mobile-menu hidden>
         <nav class="lang-switch lang-switch-menu" aria-label={t("site.language")}>
           {alternates.map((item) => (
-            <a href={item.href} lang={item.code} hreflang={item.code} aria-current={item.code === lang ? "true" : undefined}>{item.label}</a>
+            <a href={item.href} lang={item.code} hreflang={item.code} aria-current={item.code === lang ? "true" : undefined}>
+              <span class="lang-glyph" aria-hidden="true">{item.glyph}</span> {item.label}
+            </a>
           ))}
         </nav>
         <nav class="mobile-menu-links" aria-label={t("nav.mobile")}>
@@ -323,7 +360,9 @@ function isActive(url: string) {
         <p>© {year} {siteTitle}. {t("footer.motto")}</p>
         <nav class="lang-switch lang-switch-footer" aria-label={t("site.language")}>
           {alternates.map((item) => (
-            <a href={item.href} lang={item.code} hreflang={item.code} aria-current={item.code === lang ? "true" : undefined}>{item.label}</a>
+            <a href={item.href} lang={item.code} hreflang={item.code} aria-current={item.code === lang ? "true" : undefined}>
+              <span class="lang-glyph" aria-hidden="true">{item.glyph}</span> {item.label}
+            </a>
           ))}
         </nav>
         <div>
@@ -357,7 +396,7 @@ function isActive(url: string) {
         document.querySelector<HTMLElement>("main")?.toggleAttribute("inert", open);
         document.querySelector<HTMLElement>("footer")?.toggleAttribute("inert", open);
         document.querySelector<HTMLElement>(".action-bar")?.toggleAttribute("inert", open);
-        if (open) menu.querySelector<HTMLAnchorElement>("a")?.focus();
+        if (open) menu.querySelector<HTMLAnchorElement>(".mobile-menu-links a")?.focus();
       }
 
       toggle?.addEventListener("click", () => setMenu(toggle.getAttribute("aria-expanded") !== "true"));
@@ -407,6 +446,29 @@ function isActive(url: string) {
         if (event.key === "Escape" && searchPop && !searchPop.hidden) {
           setSearch(false);
           searchToggle?.focus();
+        }
+      });
+
+      // Remember a language chosen by hand so the device-language redirect never overrides it.
+      document.addEventListener("click", (event) => {
+        const choice = (event.target as HTMLElement).closest<HTMLAnchorElement>(".lang-menu a[hreflang], .lang-switch a[hreflang]");
+        if (!choice) return;
+        try {
+          localStorage.setItem("ajc-lang", choice.hreflang);
+        } catch {
+          // Storage can be blocked; the choice then applies to this visit only.
+        }
+      });
+
+      // Language menu: close when clicking elsewhere or pressing Escape.
+      const langMenu = document.querySelector<HTMLDetailsElement>("[data-lang-menu]");
+      document.addEventListener("click", (event) => {
+        if (langMenu?.open && !langMenu.contains(event.target as Node)) langMenu.open = false;
+      });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && langMenu?.open) {
+          langMenu.open = false;
+          langMenu.querySelector("summary")?.focus();
         }
       });
 

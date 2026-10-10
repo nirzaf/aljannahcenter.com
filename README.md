@@ -52,14 +52,15 @@ lists the Centre's public posts from `src/data/social-posts.ts`.
 
 ## Languages
 
-The site is published in English (at the root), Tamil (`/ta/…`) and Sinhala (`/si/…`).
+The site is published in English (at the root), Tamil (`/ta/…`), Sinhala (`/si/…`) and
+Arabic (`/ar/…`, laid out right to left).
 
-- Fixed site text lives in `src/i18n/en.ts`, `ta.ts` and `si.ts`. English is the source of
+- Fixed site text lives in `src/i18n/en.ts`, `ta.ts`, `si.ts` and `ar.ts`. English is the source of
   truth; a key missing from another language falls back to English.
 - `src/pages/[lang]/` holds thin wrappers that render the English pages in the other
   languages. Components read the language from the URL with `getLang(Astro)`.
-- Articles and pages are translated in the CMS: open the entry in EmDash and add a Tamil or
-  Sinhala translation with the same slug. Untranslated entries are shown in English.
+- Articles and pages are translated in the CMS: open the entry in EmDash and add a Tamil,
+  Sinhala or Arabic translation with the same slug. Untranslated entries are shown in English.
 - The staff desk (`/admin`) and the staff-only panels are English only.
 
 ## Design system

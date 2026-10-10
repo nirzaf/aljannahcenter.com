@@ -131,7 +131,7 @@ p { text-wrap: pretty; }
 
 .skip-link {
   position: fixed;
-  left: 1rem;
+  inset-inline-start: 1rem;
   top: -5rem;
   z-index: 300;
   padding: .75rem 1rem;
@@ -391,7 +391,7 @@ html.menu-open .site-header {
   display: flex;
   align-items: center;
   gap: .5rem;
-  margin-left: auto;
+  margin-inline-start: auto;
 }
 
 .header-admin {
@@ -443,7 +443,7 @@ html.menu-open .site-header {
   position: absolute;
   z-index: 20;
   top: calc(100% + .6rem);
-  right: 0;
+  inset-inline-end: 0;
   width: min(21rem, 90vw);
   padding: .5rem;
   border: 1px solid var(--line);
@@ -592,7 +592,7 @@ html.menu-open .site-header {
     transform: translateX(-50%);
   }
 
-  .header-actions { margin-left: 0; gap: .6rem; }
+  .header-actions { margin-inline-start: 0; gap: .6rem; }
   .header-admin { display: inline-flex; }
   .header-search { display: block; }
   .menu-toggle, .mobile-menu { display: none !important; }
@@ -628,7 +628,7 @@ html.menu-open .site-header {
   position: absolute;
   z-index: 20;
   top: calc(100% + .5rem);
-  right: 0;
+  inset-inline-end: 0;
   width: min(24rem, 80vw);
   max-height: 22rem;
   overflow-y: auto;
@@ -783,8 +783,7 @@ html.menu-open .site-header {
 .hero-frame figcaption {
   position: absolute;
   z-index: 1;
-  left: 1.25rem;
-  right: 10.5rem;
+  inset-inline: 1.25rem 10.5rem;
   bottom: 1.4rem;
   color: #fff;
   font-family: var(--font-display);
@@ -825,7 +824,7 @@ html.menu-open .site-header {
 .hero-controls {
   position: absolute;
   z-index: 2;
-  right: 1rem;
+  inset-inline-end: 1rem;
   bottom: 1rem;
   display: flex;
   gap: .35rem;
@@ -858,9 +857,9 @@ html.menu-open .site-header {
 }
 
 @media (min-width: 640px) {
-  .hero-frame figcaption { left: 1.6rem; bottom: 1.6rem; font-size: 1.3rem; }
+  .hero-frame figcaption { inset-inline-start: 1.6rem; bottom: 1.6rem; font-size: 1.3rem; }
   .hero-progress { inset: .75rem 1.6rem auto; }
-  .hero-controls { right: 1.25rem; bottom: 1.25rem; }
+  .hero-controls { inset-inline-end: 1.25rem; bottom: 1.25rem; }
 }
 
 @media (prefers-reduced-motion: reduce) { .hero-frame { transition: none; } }
@@ -937,7 +936,7 @@ html.menu-open .site-header {
   .program-grid { grid-template-columns: repeat(2, 1fr); }
   .program-card { display: block; padding: 1.75rem; }
   .program-card + .program-card { border-top: 0; }
-  .program-card:nth-child(even) { border-left: 1px solid var(--line); }
+  .program-card:nth-child(even) { border-inline-start: 1px solid var(--line); }
   .program-card:nth-child(n + 3) { border-top: 1px solid var(--line); }
   .program-icon { margin-bottom: 1.25rem; }
   .program-card h3 { margin-bottom: .45rem; font-size: 1.4rem; }
@@ -951,7 +950,7 @@ html.menu-open .site-header {
   .program-grid { grid-template-columns: repeat(4, 1fr); }
   .program-card { padding: 2rem 1.75rem 2.25rem; }
   .program-card:nth-child(n + 3) { border-top: 0; }
-  .program-card + .program-card { border-left: 1px solid var(--line); }
+  .program-card + .program-card { border-inline-start: 1px solid var(--line); }
 }
 
 /* ---------- Impact / story ---------- */
@@ -1015,7 +1014,7 @@ html.menu-open .site-header {
 
 @media (min-width: 640px) {
   .impact-stats { grid-template-columns: repeat(3, 1fr); gap: 2rem; }
-  .impact-stat dd { max-width: none; padding-right: 1.5rem; }
+  .impact-stat dd { max-width: none; padding-inline-end: 1.5rem; }
 }
 
 @media (min-width: 900px) {
@@ -1406,7 +1405,7 @@ html.menu-open .site-header {
 .profile-chip-text { display: grid; min-width: 0; line-height: 1.3; }
 .profile-chip-text small { color: var(--muted); font-size: .72rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
 .profile-chip-text strong { overflow: hidden; font-size: .95rem; text-overflow: ellipsis; white-space: nowrap; }
-.profile-chip > svg { flex: 0 0 auto; margin-left: auto; color: #8a98bf; }
+.profile-chip > svg { flex: 0 0 auto; margin-inline-start: auto; color: #8a98bf; }
 
 .scroll-row {
   display: grid;
@@ -1459,7 +1458,7 @@ html.menu-open .site-header {
 
 .highlight-badge {
   position: absolute;
-  left: .75rem;
+  inset-inline-start: .75rem;
   bottom: .75rem;
   display: inline-flex;
   align-items: center;
@@ -1532,7 +1531,7 @@ html.menu-open .site-header {
   font-size: .9rem;
 }
 
-.social-card-head time { margin-left: auto; color: var(--muted); font-size: .8rem; font-weight: 700; }
+.social-card-head time { margin-inline-start: auto; color: var(--muted); font-size: .8rem; font-weight: 700; }
 
 .social-card-icon {
   display: grid;
@@ -1690,7 +1689,7 @@ html.menu-open .site-header {
 
 .desk-notice-success { background: var(--success-soft); color: var(--success); }
 .desk-notice-error { background: #fdecea; color: #8c1d18; }
-.desk-notice a { display: inline-flex; align-items: center; gap: .25rem; margin-left: auto; color: inherit; text-decoration: underline; text-underline-offset: .2em; }
+.desk-notice a { display: inline-flex; align-items: center; gap: .25rem; margin-inline-start: auto; color: inherit; text-decoration: underline; text-underline-offset: .2em; }
 
 .desk-actions { display: grid; gap: .6rem; }
 
@@ -2227,7 +2226,7 @@ html.menu-open .action-bar { display: none; }
 }
 
 .share-row > span {
-  margin-right: .35rem;
+  margin-inline-end: .35rem;
   color: var(--muted);
   font-size: .72rem;
   font-weight: 800;
@@ -2273,7 +2272,7 @@ html.menu-open .action-bar { display: none; }
 .prose h2 { margin: 2em 0 .6em; font-family: var(--font-display); font-size: 1.85rem; font-weight: 500; line-height: 1.15; }
 .prose h3 { margin: 1.6em 0 .5em; font-family: var(--font-display); font-size: 1.4rem; font-weight: 500; }
 .prose a { color: var(--blue); text-decoration: underline; text-decoration-color: var(--gold-deep); text-underline-offset: .2em; }
-.prose ul, .prose ol { margin: 0 0 1.3em; padding-left: 1.4em; }
+.prose ul, .prose ol { margin: 0 0 1.3em; padding-inline-start: 1.4em; }
 .prose ul { list-style: disc; }
 .prose ol { list-style: decimal; }
 .prose li { margin-bottom: .35em; }
@@ -2281,8 +2280,9 @@ html.menu-open .action-bar { display: none; }
 
 .prose blockquote {
   margin: 1.5em 0;
-  padding: .25rem 0 .25rem 1.2rem;
-  border-left: 3px solid var(--gold);
+  padding-block: .25rem;
+  padding-inline-start: 1.2rem;
+  border-inline-start: 3px solid var(--gold);
   color: var(--ink-soft);
   font-family: var(--font-display);
   font-size: 1.2em;
@@ -2421,27 +2421,109 @@ html.menu-open .action-bar { display: none; }
 @media (min-width: 1024px) { .hero-slideshow .hero-slides { aspect-ratio: 1 / 1; } }
 
 /* ---------- Language switcher ---------- */
-.lang-switch { display: inline-flex; align-items: center; gap: .2rem; }
-
-.lang-switch a {
-  padding: .15rem .6rem;
-  border-radius: 999px;
-  /* Each name is written in its own script; system fonts cover all three. */
-  font-family: "Nunito Sans", "Noto Sans Tamil", "Noto Sans Sinhala", system-ui, sans-serif;
-  font-weight: 700;
-  line-height: 1.5;
+/* Each language is marked by a letter of its own script, so it is recognisable
+   without being able to read the current page. */
+.lang-glyph {
+  display: inline-grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: .5rem;
+  background: var(--sky);
+  color: var(--royal);
+  font-family: "Nunito Sans", "Noto Sans Tamil", "Noto Sans Sinhala", "Noto Sans Arabic", system-ui, sans-serif;
+  font-size: .95rem;
+  font-weight: 800;
+  line-height: 1;
 }
 
-.utility-strip .lang-switch { margin-right: .5rem; }
-.utility-strip .lang-switch a[aria-current],
-.lang-switch-footer a[aria-current] { background: rgb(255 255 255 / .16); color: #fff; }
+.lang-menu { position: relative; }
 
-.lang-switch-menu { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; }
+.lang-menu summary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .4rem;
+  min-width: 2.75rem;
+  height: 2.75rem;
+  padding-inline: .7rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--card);
+  color: var(--ink);
+  cursor: pointer;
+  font-size: .88rem;
+  font-weight: 700;
+  list-style: none;
+  white-space: nowrap;
+}
+
+.lang-menu summary::-webkit-details-marker { display: none; }
+.lang-menu summary:hover { border-color: var(--sky-deep); background: var(--sky); }
+.lang-menu[open] summary { border-color: var(--royal); }
+.lang-menu-caret { transition: transform .18s; }
+.lang-menu[open] .lang-menu-caret { transform: rotate(180deg); }
+
+/* Phones show just the icon; the names are in the list. */
+.lang-menu-current, .lang-menu-caret { display: none; }
+
+@media (min-width: 640px) {
+  .lang-menu-current, .lang-menu-caret { display: inline; }
+}
+
+.lang-menu-list {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + .5rem);
+  inset-inline-end: 0;
+  width: 12.5rem;
+  margin: 0;
+  padding: .35rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow: var(--shadow-lg);
+  list-style: none;
+}
+
+.lang-menu-list a,
+.lang-switch a {
+  font-family: "Nunito Sans", "Noto Sans Tamil", "Noto Sans Sinhala", "Noto Sans Arabic", system-ui, sans-serif;
+}
+
+.lang-menu-list a {
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+  min-height: 2.75rem;
+  padding: .4rem .6rem;
+  border-radius: var(--radius-sm);
+  color: var(--ink);
+  font-size: .95rem;
+  font-weight: 700;
+}
+
+.lang-menu-list a:hover { background: var(--sky); }
+.lang-menu-list a[aria-current] { color: var(--royal); }
+.lang-menu-list a[aria-current] .lang-glyph { background: var(--royal); color: #fff; }
+.lang-menu-check { margin-inline-start: auto; color: var(--royal); }
+
+.lang-switch { display: flex; gap: .5rem; }
+
+.lang-switch a {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.lang-switch-menu { display: grid; grid-template-columns: repeat(2, 1fr); }
 
 .lang-switch-menu a {
-  display: grid;
-  place-items: center;
-  min-height: 2.75rem;
+  min-height: 3rem;
+  padding: .4rem .6rem;
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
   background: var(--card);
@@ -2449,9 +2531,14 @@ html.menu-open .action-bar { display: none; }
 }
 
 .lang-switch-menu a[aria-current] { border-color: var(--ink); background: var(--ink); color: #fff; }
-.lang-switch-footer { flex-wrap: wrap; }
+.lang-switch-menu a[aria-current] .lang-glyph { background: var(--gold); color: var(--ink); }
 
-/* ---------- Tamil and Sinhala typography ----------
+.lang-switch-footer { flex-wrap: wrap; gap: .35rem 1rem; }
+.lang-switch-footer .lang-glyph { width: 1.5rem; height: 1.5rem; background: rgb(255 255 255 / .12); color: #fff; font-size: .8rem; }
+.lang-switch-footer a[aria-current] { color: #fff; }
+.lang-switch-footer a[aria-current] .lang-glyph { background: var(--gold); color: var(--ink); }
+
+/* ---------- Tamil, Sinhala and Arabic typography ----------
    These scripts are taller and wider than Latin and must not be letter-spaced,
    so they get their own fonts, looser leading and smaller display sizes. */
 html:lang(ta) {
@@ -2464,34 +2551,79 @@ html:lang(si) {
   --font-body: "Noto Sans Sinhala", "Nunito Sans", system-ui, sans-serif;
 }
 
-html:is(:lang(ta), :lang(si)) * { letter-spacing: 0 !important; }
-html:is(:lang(ta), :lang(si)) body { line-height: 1.75; }
+html:lang(ar) {
+  --font-display: "Noto Naskh Arabic", "Fraunces", Georgia, serif;
+  --font-body: "Noto Sans Arabic", "Nunito Sans", system-ui, sans-serif;
+}
 
-html:is(:lang(ta), :lang(si)) :is(h1, h2, h3, h4) {
+html:is(:lang(ta), :lang(si), :lang(ar)) * { letter-spacing: 0 !important; }
+html:is(:lang(ta), :lang(si), :lang(ar)) body { line-height: 1.75; }
+
+html:is(:lang(ta), :lang(si), :lang(ar)) :is(h1, h2, h3, h4) {
   line-height: 1.35 !important;
   overflow-wrap: anywhere;
 }
 
-html:is(:lang(ta), :lang(si)) .hero h1 { max-width: 24ch; font-size: clamp(1.8rem, 7vw, 3rem); }
-html:is(:lang(ta), :lang(si)) .hero h1 em { font-style: normal; white-space: normal; }
-html:is(:lang(ta), :lang(si)) .hero h1 em::after { display: none; }
+html:is(:lang(ta), :lang(si), :lang(ar)) .hero h1 { max-width: 24ch; font-size: clamp(1.8rem, 7vw, 3rem); }
+html:is(:lang(ta), :lang(si), :lang(ar)) .hero h1 em { font-style: normal; white-space: normal; }
+html:is(:lang(ta), :lang(si), :lang(ar)) .hero h1 em::after { display: none; }
 
-html:is(:lang(ta), :lang(si)) :is(.section-heading h2, .story-copy h2, .contact-copy h2, .support-copy h2, .tiktok-title) {
+html:is(:lang(ta), :lang(si), :lang(ar)) :is(.section-heading h2, .story-copy h2, .contact-copy h2, .support-copy h2, .tiktok-title) {
   font-size: clamp(1.5rem, 4.6vw, 2.3rem);
 }
 
-html:is(:lang(ta), :lang(si)) :is(.page-hero h1, .article-header h1, .not-found h1) { font-size: clamp(1.8rem, 6.5vw, 3rem); }
-html:is(:lang(ta), :lang(si)) :is(.program-card h3, .post-card h3, .highlight-copy h3) { font-size: 1.2rem; }
-html:is(:lang(ta), :lang(si)) .mobile-menu-links a { font-size: 1.25rem; }
-html:is(:lang(ta), :lang(si)) .impact-stat dt { font-size: clamp(1.9rem, 5vw, 2.6rem); line-height: 1.3; }
-html:is(:lang(ta), :lang(si)) :is(.kicker, .eyebrow, .footer-title, .card-label) { font-size: .85rem; }
-html:is(:lang(ta), :lang(si)) :is(.button, .text-link, .primary-nav a) { font-weight: 700; }
-html:is(:lang(ta), :lang(si)) .button { line-height: 1.45; }
+html:is(:lang(ta), :lang(si), :lang(ar)) :is(.page-hero h1, .article-header h1, .not-found h1) { font-size: clamp(1.8rem, 6.5vw, 3rem); }
+html:is(:lang(ta), :lang(si), :lang(ar)) :is(.program-card h3, .post-card h3, .highlight-copy h3) { font-size: 1.2rem; }
+html:is(:lang(ta), :lang(si), :lang(ar)) .mobile-menu-links a { font-size: 1.25rem; }
+html:is(:lang(ta), :lang(si), :lang(ar)) .impact-stat dt { font-size: clamp(1.9rem, 5vw, 2.6rem); line-height: 1.3; }
+html:is(:lang(ta), :lang(si), :lang(ar)) :is(.kicker, .eyebrow, .footer-title, .card-label) { font-size: .85rem; }
+html:is(:lang(ta), :lang(si), :lang(ar)) :is(.button, .text-link, .primary-nav a) { font-weight: 700; }
+html:is(:lang(ta), :lang(si), :lang(ar)) .button { line-height: 1.45; }
 
 @media (min-width: 1024px) {
-  html:is(:lang(ta), :lang(si)) .primary-nav a { padding-inline: .55rem; font-size: .88rem; white-space: nowrap; }
-  html:is(:lang(ta), :lang(si)) .header-admin { white-space: nowrap; }
-  html:is(:lang(ta), :lang(si)) .brand-logo { width: 11.5rem; }
+  html:is(:lang(ta), :lang(si), :lang(ar)) .primary-nav a { padding-inline: .55rem; font-size: .88rem; white-space: nowrap; }
+  html:is(:lang(ta), :lang(si), :lang(ar)) .header-admin { white-space: nowrap; }
+  html:is(:lang(ta), :lang(si), :lang(ar)) .brand-logo { width: 11.5rem; }
+}
+
+/* Small laptops: the language menu shrinks to its icon, and the staff link
+   (still in the footer) steps aside so the header stays on one line. */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .lang-menu-current, .lang-menu-caret { display: none; }
+  .header-admin { display: none; }
+}
+
+/* Tamil labels are the longest: keep the header on one line on mid-size screens. */
+@media (min-width: 1024px) and (max-width: 1499px) {
+  html:lang(ta) :is(.lang-menu-current, .lang-menu-caret) { display: none; }
+  html:lang(ta) .primary-nav { gap: 0; }
+  html:lang(ta) .primary-nav a { padding-inline: .4rem; font-size: .84rem; }
+  html:lang(ta) .brand-logo { width: 10rem; }
+  html:lang(ta) .header-actions { gap: .4rem; }
+  html:lang(ta) .header-admin { display: none; }
+}
+
+@media (min-width: 1024px) and (max-width: 1199px) {
+  html:is(:lang(ta), :lang(si), :lang(ar)) :is(.lang-menu-current, .lang-menu-caret) { display: none; }
+  html:is(:lang(ta), :lang(si), :lang(ar)) .primary-nav a { padding-inline: .35rem; font-size: .8rem; }
+  html:is(:lang(ta), :lang(si), :lang(ar)) .brand-logo { width: 9rem; }
+  html:lang(ta) .header-donate span { display: none; }
+}
+
+/* ---------- Right-to-left (Arabic) ----------
+   The layout mirrors through logical properties; these are the leftovers. */
+[dir="rtl"] :is(.lucide-arrow-right, .lucide-arrow-left, .lucide-arrow-up-right, .lucide-chevron-left, .lucide-chevron-right) {
+  transform: scaleX(-1);
+}
+
+[dir="rtl"] .mobile-menu-links a::after { content: "←"; }
+[dir="rtl"] .contact-list a:hover { transform: translateX(-3px); }
+[dir="rtl"] .hero::before { right: auto; left: -12rem; }
+[dir="rtl"] .hero h1 { font-size: clamp(2.1rem, 8vw, 3.4rem); }
+
+/* Phone numbers, account numbers, e-mail and the street address stay left-to-right. */
+[dir="rtl"] :is(.account-number strong, .account-card dd, .contact-list strong, .footer-contact a, .utility-strip-links > a, .mobile-menu-contact a, .account-head strong) {
+  unicode-bidi: plaintext;
 }
 
 /* ---------- Motion preferences ---------- */
