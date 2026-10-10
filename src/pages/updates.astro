@@ -4,6 +4,7 @@ import { getEmDashCollection } from "emdash";
 import Base from "../layouts/Base.astro";
 import EmptyUpdates from "../components/EmptyUpdates.astro";
 import PostCard from "../components/PostCard.astro";
+import SocialFeed from "../components/SocialFeed.astro";
 import SocialHighlights from "../components/SocialHighlights.astro";
 
 let posts: any[] = [];
@@ -37,7 +38,7 @@ const isLoggedIn = Boolean(Astro.locals.user);
       <h1>Stories & updates</h1>
       <p>Daily notes, weekly roundups, programme announcements and stories from the children, families and team at Al-Jannah Centre.</p>
       <div class="page-hero-actions">
-        {isLoggedIn && <a class="button button-primary" href="/_emdash/admin"><PenLine size={17} aria-hidden="true" /> Publish an update</a>}
+        {isLoggedIn && <a class="button button-primary" href="/admin"><PenLine size={17} aria-hidden="true" /> Publish an update</a>}
         <a class="text-link" href="/posts">Browse the article archive <ArrowRight size={17} aria-hidden="true" /></a>
       </div>
     </div>
@@ -81,6 +82,8 @@ const isLoggedIn = Boolean(Astro.locals.user);
       <EmptyUpdates isLoggedIn={isLoggedIn} />
     )}
   </div>
+
+  <SocialFeed />
 
   <SocialHighlights />
 </Base>

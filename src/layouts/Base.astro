@@ -201,7 +201,7 @@ function isActive(url: string) {
               />
             </div>
           </div>
-          {isLoggedIn && <a class="header-admin" href="/_emdash/admin">Admin</a>}
+          {isLoggedIn && <a class="header-admin" href="/admin">Staff desk</a>}
           <a class="button button-gold header-donate" href="/#support">
             <HandHeart size={18} aria-hidden="true" /> <span>Support Us</span>
           </a>
@@ -224,7 +224,7 @@ function isActive(url: string) {
           {primaryItems.map((item) => (
             <a href={item.url} aria-current={isActive(item.url) ? "page" : undefined}>{item.label}</a>
           ))}
-          {isLoggedIn && <a href="/_emdash/admin">Admin</a>}
+          {isLoggedIn && <a href="/admin">Staff desk</a>}
         </nav>
         <form class="mobile-search" method="get" action="/search" role="search">
           <label class="sr-only" for="mobile-search-input">Search articles and pages</label>
@@ -281,7 +281,7 @@ function isActive(url: string) {
         <p>© {year} {siteTitle}. Give hope. Change a life.</p>
         <div>
           <a href="/rss.xml">RSS</a>
-          <a href="/_emdash/admin">Staff sign in</a>
+          <a href="/admin">Staff sign in</a>
         </div>
       </div>
       <div class="footer-widget"><WidgetArea name="footer" /></div>

@@ -10,6 +10,7 @@ import ContactSection from "../components/home/ContactSection.astro";
 import SectionHeading from "../components/SectionHeading.astro";
 import PostCard from "../components/PostCard.astro";
 import TikTokProfile from "../components/TikTokProfile.astro";
+import SocialFeed from "../components/SocialFeed.astro";
 
 let posts: any[] = [];
 let cacheHint: unknown;
@@ -64,6 +65,8 @@ if (Astro.cache?.enabled && cacheHint) Astro.cache.set(cacheHint);
   <SupportSection />
 
   <ContactSection />
+
+  <SocialFeed limit={3} link={{ href: "/updates#social", label: "See more posts" }} />
 
   <section class="section section-tint" id="follow" aria-labelledby="tiktok-title">
     <div class="container" data-reveal><TikTokProfile heading="h2" showProfiles /></div>

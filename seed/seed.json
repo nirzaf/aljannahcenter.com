@@ -101,6 +101,35 @@
           "required": true
         }
       ]
+    },
+    {
+      "slug": "social",
+      "label": "Social posts",
+      "labelSingular": "Social post",
+      "description": "Facebook, Instagram and TikTok posts shared on the website.",
+      "supports": [
+        "drafts",
+        "revisions"
+      ],
+      "fields": [
+        {
+          "slug": "url",
+          "label": "Post link",
+          "type": "url",
+          "required": true
+        },
+        {
+          "slug": "platform",
+          "label": "Platform",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "caption",
+          "label": "Caption",
+          "type": "text"
+        }
+      ]
     }
   ],
   "taxonomies": [

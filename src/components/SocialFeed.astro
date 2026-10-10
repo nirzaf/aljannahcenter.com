@@ -1,0 +1,193 @@
+---
+import { ArrowUpRight } from "lucide-react";
+import { getEmDashCollection } from "emdash";
+import BrandIcon from "./BrandIcon.astro";
+import SectionHeading from "./SectionHeading.astro";
+import { officialSocialPosts } from "../data/social-posts";
+import { parseSocialUrl } from "../utils/social-embed";
+import type { SocialEmbed, SocialPlatform } from "../utils/social-embed";
+
+interface Props {
+  /** Show only the latest few posts (homepage). Omit for the full, filterable feed. */
+  limit?: number;
+  /** Link to the full feed, shown beside the heading. */
+  link?: { href: string; label: string };
+}
+
+const { limit, link } = Astro.props;
+const browsable = limit === undefined;
+const pageSize = 9;
+
+type FeedPost = { key: string; caption: string; date: Date | null; embed: SocialEmbed };
+
+// 1. Posts shared from the staff desk (/admin). The collection is created on first use.
+let shared: FeedPost[] = [];
+try {
+  const result = await getEmDashCollection("social", {
+    orderBy: { published_at: "desc" },
+    limit: 60,
+  });
+  shared = result.entries.flatMap((entry: any) => {
+    const embed = parseSocialUrl(String(entry.data.url ?? ""));
+    if (!embed) return [];
+    return [{ key: embed.url, caption: String(entry.data.caption ?? ""), date: entry.data.publishedAt ?? null, embed }];
+  });
+  if (Astro.cache?.enabled && result.cacheHint) Astro.cache.set(result.cacheHint);
+} catch {
+  // Nothing shared from the desk yet.
+}
+
+// 2. The Centre's public posts, mixed across platforms so no single channel dominates.
+// A TikTok id carries its upload time in its upper bits.
+const tiktokDate = (url: string) => {
+  const id = url.match(/\/video\/(\d+)/)?.[1];
+  return id ? new Date(Number(BigInt(id) >> 32n) * 1000) : null;
+};
+const official: FeedPost[] = officialSocialPosts.flatMap((url) => {
+  const embed = parseSocialUrl(url);
+  return embed ? [{ key: embed.url, caption: "", date: embed.platform === "tiktok" ? tiktokDate(url) : null, embed }] : [];
+});
+const platforms: SocialPlatform[] = ["tiktok", "instagram", "facebook"];
+const queues = platforms.map((platform) => official.filter((post) => post.embed.platform === platform));
+const mixed: FeedPost[] = [];
+for (let index = 0; queues.some((queue) => index < queue.length); index++) {
+  for (const queue of queues) if (queue[index]) mixed.push(queue[index]);
+}
+
+const seen = new Set<string>();
+const all = [...shared, ...mixed].filter((post) => !seen.has(post.key) && seen.add(post.key));
+const posts = browsable ? all : all.slice(0, limit);
+const counts = platforms
+  .map((platform) => ({
+    platform,
+    label: posts.find((post) => post.embed.platform === platform)?.embed.label ?? platform,
+    total: posts.filter((post) => post.embed.platform === platform).length,
+  }))
+  .filter((item) => item.total > 0);
+---
+
+{posts.length > 0 && (
+  <section class="section" id="social" aria-labelledby="social-feed-title" data-social-feed data-page-size={pageSize}>
+    <div class="container" data-reveal>
+      <SectionHeading
+        kicker="From our channels"
+        titleId="social-feed-title"
+        title="Fresh from the Centre."
+        description="Recent posts from Al-Jannah Centre’s Facebook, Instagram and TikTok."
+        link={link}
+      />
+
+      {browsable && counts.length > 1 && (
+        <div class="gallery-toolbar">
+          <div class="gallery-tabs social-filter" role="group" aria-label="Filter posts by channel">
+            <button type="button" aria-pressed="true" data-social-filter="all">All <span>{posts.length}</span></button>
+            {counts.map((item) => (
+              <button type="button" aria-pressed="false" data-social-filter={item.platform}>
+                {item.label} <span>{item.total}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <ul class="social-feed">
+        {posts.map((post, index) => (
+          <li class="social-card" data-platform={post.embed.platform} hidden={browsable && index >= pageSize}>
+            <header class="social-card-head">
+              <span class={"social-card-icon social-" + post.embed.platform}><BrandIcon name={post.embed.platform} size={16} /></span>
+              <strong>{post.embed.label}</strong>
+              {post.date && (
+                <time datetime={post.date.toISOString()}>
+                  {post.date.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
+                </time>
+              )}
+            </header>
+            <div class={"social-frame social-frame-" + post.embed.shape}>
+              {/* The frame loads only once its card is on screen. */}
+              <iframe
+                data-src={post.embed.src}
+                title={post.caption || post.embed.label + " post from Al-Jannah Centre"}
+                allow="encrypted-media; fullscreen; picture-in-picture"
+                referrerpolicy="strict-origin-when-cross-origin"
+              ></iframe>
+            </div>
+            <div class="social-card-foot">
+              {post.caption && <p>{post.caption}</p>}
+              <a class="text-link" href={post.embed.url} target="_blank" rel="noopener noreferrer">
+                View on {post.embed.label} <ArrowUpRight size={15} aria-hidden="true" />
+              </a>
+            </div>
+          </li>
+        ))}
+      </ul>
+
+      {browsable && posts.length > pageSize && (
+        <div class="gallery-footer">
+          <p aria-live="polite" data-social-count></p>
+          <button class="button button-outline" type="button" data-social-more>Show more posts</button>
+        </div>
+      )}
+    </div>
+  </section>
+)}
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-social-feed]").forEach((feed) => {
+    const cards = [...feed.querySelectorAll<HTMLElement>(".social-card")];
+    const filters = [...feed.querySelectorAll<HTMLButtonElement>("[data-social-filter]")];
+    const more = feed.querySelector<HTMLButtonElement>("[data-social-more]");
+    const count = feed.querySelector<HTMLElement>("[data-social-count]");
+    const pageSize = Number(feed.dataset.pageSize) || 9;
+    let platform = "all";
+    let visible = pageSize;
+
+    // Load each embed when its card approaches the viewport.
+    const load = (card: Element) => {
+      const frame = card.querySelector<HTMLIFrameElement>("iframe[data-src]");
+      if (frame?.dataset.src) {
+        frame.src = frame.dataset.src;
+        delete frame.dataset.src;
+      }
+    };
+    const observer =
+      "IntersectionObserver" in window
+        ? new IntersectionObserver(
+            (entries) => {
+              for (const entry of entries) {
+                if (entry.isIntersecting) {
+                  load(entry.target);
+                  observer?.unobserve(entry.target);
+                }
+              }
+            },
+            { rootMargin: "300px" },
+          )
+        : null;
+    cards.forEach((card) => (observer ? observer.observe(card) : load(card)));
+
+    if (!more && filters.length === 0) return;
+
+    const render = () => {
+      const matching = cards.filter((card) => platform === "all" || card.dataset.platform === platform);
+      cards.forEach((card) => (card.hidden = true));
+      matching.slice(0, visible).forEach((card) => (card.hidden = false));
+      const shown = Math.min(visible, matching.length);
+      if (count) count.textContent = `Showing ${shown} of ${matching.length}`;
+      if (more) more.hidden = shown >= matching.length;
+    };
+
+    filters.forEach((button) =>
+      button.addEventListener("click", () => {
+        platform = button.dataset.socialFilter ?? "all";
+        visible = pageSize;
+        filters.forEach((item) => item.setAttribute("aria-pressed", String(item === button)));
+        render();
+      }),
+    );
+    more?.addEventListener("click", () => {
+      visible += pageSize;
+      render();
+    });
+    render();
+  });
+</script>

@@ -1,0 +1,30 @@
+---
+import { ArrowUpRight } from "lucide-react";
+import Base from "../../layouts/Base.astro";
+import StaffDesk from "../../components/admin/StaffDesk";
+
+export const prerender = false;
+
+// Staff only: visitors are sent to the CMS sign-in.
+const user = Astro.locals.user;
+if (!user) return Astro.redirect("/_emdash/admin/login?redirect=" + encodeURIComponent("/admin"));
+const firstName = (user.name ?? "").trim().split(/\s+/)[0];
+---
+
+<Base title="Staff desk" description="Publish articles and share social posts on the Al-Jannah Centre website.">
+  <header class="page-hero desk-hero">
+    <div class="container">
+      <p class="kicker">Staff desk</p>
+      <h1>{firstName ? `Welcome, ${firstName}.` : "Welcome."}</h1>
+      <p>Publish an article or bring a Facebook, Instagram or TikTok post onto the website. Changes go live straight away.</p>
+      <div class="page-hero-actions">
+        <a class="text-link" href="/_emdash/admin">Open the full CMS <ArrowUpRight size={16} aria-hidden="true" /></a>
+        <a class="text-link" href="/updates">View the Stories page <ArrowUpRight size={16} aria-hidden="true" /></a>
+      </div>
+    </div>
+  </header>
+
+  <div class="container page-body">
+    <StaffDesk client:load />
+  </div>
+</Base>

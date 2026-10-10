@@ -42,6 +42,14 @@ collection. The deployment workflow validates the seed but does not apply it to
 production. Until the collection is available, the homepage uses the three
 existing milestones as a fallback. Keep published achievements source-verified.
 
+### Staff desk
+
+Signed-in staff can use `/admin` to publish a quick article or share a Facebook,
+Instagram or TikTok post by pasting its link. Shared posts are stored in a **Social
+posts** CMS collection, which the desk creates the first time an administrator shares
+a post, and appear in the social feed on the homepage and Stories page. The feed also
+lists the Centre's public posts from `src/data/social-posts.ts`.
+
 ## Design system
 
 The official indigo palette (`#20266E` / `#2B3176`) lives in `site.css`, alongside
