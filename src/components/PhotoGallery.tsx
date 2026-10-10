@@ -76,19 +76,8 @@ export function PhotoGallery() {
   }
 
   return (
-    <section className="section gallery-section" id="gallery" aria-labelledby="gallery-title">
+    <section className="gallery-section" id="gallery" aria-label="Photo gallery">
       <div className="container">
-        <div className="section-heading">
-          <div>
-            <p className="kicker">Photo gallery</p>
-            <h2 id="gallery-title">Moments from the Centre</h2>
-          </div>
-          <p>
-            Classroom creativity, celebrations and community days, shared from the Centre’s
-            official channels.
-          </p>
-        </div>
-
         <div className="gallery-toolbar">
           <div className="gallery-tabs" role="tablist" aria-label="Gallery albums">
             {albums.map((item, index) => (

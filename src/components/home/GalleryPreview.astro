@@ -1,5 +1,4 @@
 ---
-import { ArrowRight } from "lucide-react";
 import SectionHeading from "../SectionHeading.astro";
 
 // A curated editorial preview — the full gallery lives on /gallery.
@@ -49,6 +48,7 @@ const previewPhotos = [
       titleId="gallery-preview-title"
       title="Glimpses from our days."
       description="Classroom creativity, celebrations and community days — a small selection from the Centre’s photo gallery."
+      link={{ href: "/gallery", label: "View all photos" }}
     />
     <div class="bento">
       {previewPhotos.map((photo) => (
@@ -67,11 +67,6 @@ const previewPhotos = [
           />
         </a>
       ))}
-    </div>
-    <div class="bento-footer">
-      <a class="text-link" href="/gallery">
-        View all photos <ArrowRight size={17} aria-hidden="true" />
-      </a>
     </div>
   </div>
 </section>

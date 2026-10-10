@@ -26,6 +26,13 @@ const isLoggedIn = Boolean(Astro.locals.user);
 >
   <header class="page-hero">
     <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/">Home</a>
+        <span class="sep" aria-hidden="true">/</span>
+        <a href="/updates">Stories</a>
+        <span class="sep" aria-hidden="true">/</span>
+        <span aria-current="page">Archive</span>
+      </nav>
       <p class="kicker">From the Centre</p>
       <h1>Articles &amp; updates</h1>
       <p>Stories, announcements and celebrations published by the Al-Jannah Centre team.</p>

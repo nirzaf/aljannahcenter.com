@@ -1,6 +1,8 @@
 ---
 import { ArrowRight, BookOpen, HeartHandshake, Palette, Sparkles } from "lucide-react";
+import BrandIcon from "../BrandIcon.astro";
 import SectionHeading from "../SectionHeading.astro";
+import { centre } from "../../data/centre";
 
 const focusAreas = [
   {
@@ -32,20 +34,27 @@ const focusAreas = [
       kicker="What we do"
       titleId="programmes-title"
       title="Celebrating abilities, talents, faiths and values."
-      description="The Centre’s work spans education, therapy and vocational training for children with special needs. For programme, admission and visit enquiries, please speak with the Centre directly."
+      description="The Centre’s work spans education, therapy and vocational training for children with special needs."
     />
-    <div class="program-grid">
-      {focusAreas.map(({ icon: Icon, title, text }, index) => (
-        <article class="program-card">
-          <p class="program-index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</p>
+    <ul class="program-grid">
+      {focusAreas.map(({ icon: Icon, title, text }) => (
+        <li class="program-card">
           <span class="program-icon"><Icon size={22} aria-hidden="true" /></span>
           <h3>{title}</h3>
           <p>{text}</p>
-          <a class="text-link program-link" href="/pages/about">
-            Learn more <ArrowRight size={15} aria-hidden="true" />
-          </a>
-        </article>
+        </li>
       ))}
+    </ul>
+    <div class="program-footer">
+      <p>For programme, admission and visit enquiries, please speak with the Centre directly.</p>
+      <div class="program-footer-links">
+        <a class="button button-outline" href={centre.whatsapp.href} target="_blank" rel="noopener noreferrer">
+          <BrandIcon name="whatsapp" size={18} /> Ask on WhatsApp
+        </a>
+        <a class="text-link" href="/pages/about">
+          About the Centre <ArrowRight size={16} aria-hidden="true" />
+        </a>
+      </div>
     </div>
   </div>
 </section>
