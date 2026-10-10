@@ -98,7 +98,8 @@ html.menu-open { overflow: hidden; }
 
 a { color: inherit; text-decoration: none; }
 img { max-width: 100%; height: auto; }
-h1, h2, h3, h4 { color: var(--ink); text-wrap: balance; }
+iframe, video { max-width: 100%; }
+h1, h2, h3, h4 { color: var(--ink); text-wrap: balance; overflow-wrap: break-word; }
 p { text-wrap: pretty; }
 
 :focus-visible {
@@ -244,6 +245,21 @@ html.js [data-reveal].is-visible { opacity: 1; transform: none; }
 
 .text-link:hover { gap: .65rem; border-color: var(--blue); }
 
+/* Inline links keep their look but get a finger-sized touch area. */
+.text-link, .back-link, .breadcrumb a, .footer-links a, .footer-bottom a { position: relative; }
+
+.text-link::before,
+.back-link::before,
+.breadcrumb a::before,
+.footer-links a::before,
+.footer-bottom a::before {
+  position: absolute;
+  inset: -.6rem -.25rem;
+  content: "";
+}
+
+.footer-links a::before { inset-block: -.5rem; }
+
 /* ---------- Buttons ---------- */
 .button {
   display: inline-flex;
@@ -357,6 +373,7 @@ html.menu-open .site-header {
 .brand {
   display: inline-flex;
   align-items: center;
+  min-height: 2.75rem;
   gap: .65rem;
   flex-shrink: 0;
 }
@@ -796,15 +813,17 @@ html.menu-open .site-header {
 .hero-progress {
   position: absolute;
   z-index: 2;
-  inset: .5rem 1.25rem auto;
+  inset: 0 1.25rem auto;
   display: flex;
   gap: .4rem;
 }
 
 .hero-progress button {
+  display: flex;
   flex: 1;
-  height: 1.75rem;
-  padding: 0;
+  align-items: flex-start;
+  height: 2.75rem;
+  padding: .75rem 0 0;
   border: 0;
   background: transparent;
   cursor: pointer;
@@ -812,6 +831,7 @@ html.menu-open .site-header {
 
 .hero-progress span {
   display: block;
+  flex: 1;
   height: 3px;
   border-radius: 3px;
   background: rgb(255 255 255 / .45);
@@ -851,6 +871,15 @@ html.menu-open .site-header {
 .hero-progress button:focus-visible,
 .hero-controls button:focus-visible { outline: 3px solid #fff; outline-offset: 2px; box-shadow: none; }
 
+@media (max-width: 419px) {
+  .hero-frame figcaption { inset-inline: 1.25rem; bottom: 4.5rem; }
+  .hero-frame::after {
+    background:
+      linear-gradient(180deg, rgb(15 19 57 / .34), transparent 22%),
+      linear-gradient(0deg, rgb(15 19 57 / .86), transparent 58%);
+  }
+}
+
 @media (min-width: 640px) and (max-width: 1023px) {
   .hero-frames { aspect-ratio: 16 / 10; }
   .hero-frame img { object-position: center 35%; }
@@ -858,7 +887,7 @@ html.menu-open .site-header {
 
 @media (min-width: 640px) {
   .hero-frame figcaption { inset-inline-start: 1.6rem; bottom: 1.6rem; font-size: 1.3rem; }
-  .hero-progress { inset: .75rem 1.6rem auto; }
+  .hero-progress { inset: .25rem 1.6rem auto; }
   .hero-controls { inset-inline-end: 1.25rem; bottom: 1.25rem; }
 }
 
@@ -1173,6 +1202,8 @@ html.menu-open .site-header {
 
 .gallery-tabs {
   display: inline-flex;
+  flex-wrap: wrap;
+  max-width: 100%;
   padding: .3rem;
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
@@ -1181,7 +1212,9 @@ html.menu-open .site-header {
 
 .gallery-tabs button {
   display: inline-flex;
+  flex: 1 1 auto;
   align-items: center;
+  justify-content: center;
   gap: .45rem;
   min-height: 2.5rem;
   padding: .45rem 1rem;
@@ -1973,7 +2006,7 @@ html.menu-open .site-header {
   text-transform: uppercase;
 }
 
-.footer-links { display: grid; gap: .6rem; margin: 0; padding: 0; list-style: none; }
+.footer-links { display: grid; gap: 1rem; margin: 0; padding: 0; list-style: none; }
 .footer-links:not(.footer-contact) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .footer-links a { display: inline-flex; align-items: flex-start; gap: .5rem; font-size: .95rem; transition: color .2s; }
 .footer-links a:hover { color: var(--gold); }
@@ -2271,6 +2304,9 @@ html.menu-open .action-bar { display: none; }
   line-height: 1.8;
 }
 
+.prose { overflow-wrap: break-word; }
+.prose :is(pre, table) { display: block; max-width: 100%; overflow-x: auto; }
+.prose :is(iframe, video, embed, object) { max-width: 100%; }
 .prose p { margin: 0 0 1.3em; }
 .prose h2 { margin: 2em 0 .6em; font-family: var(--font-display); font-size: 1.85rem; font-weight: 500; line-height: 1.15; }
 .prose h3 { margin: 1.6em 0 .5em; font-family: var(--font-display); font-size: 1.4rem; font-weight: 500; }
