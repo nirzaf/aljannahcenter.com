@@ -1,16 +1,18 @@
 ---
-import { getEmDashCollection } from "emdash";
 import Base from "../../layouts/Base.astro";
 import EmptyUpdates from "../../components/EmptyUpdates.astro";
 import PostCard from "../../components/PostCard.astro";
+import { getLang, localePath, useTranslations } from "../../i18n";
+import { getLocalizedCollection } from "../../i18n/content";
+
+const lang = getLang(Astro);
+const t = useTranslations(lang);
+const link = (path: string) => localePath(lang, path);
 
 let posts: any[] = [];
 let cacheHint: unknown;
 try {
-  const result = await getEmDashCollection("posts", {
-    orderBy: { published_at: "desc" },
-    limit: 100,
-  });
+  const result = await getLocalizedCollection("posts", { orderBy: { published_at: "desc" }, limit: 100 }, lang);
   posts = result.entries;
   cacheHint = result.cacheHint;
 } catch {
@@ -21,21 +23,21 @@ const isLoggedIn = Boolean(Astro.locals.user);
 ---
 
 <Base
-  title="Articles & updates"
-  description="Articles, announcements and updates from Al-Jannah Centre."
+  title={t("archive.title")}
+  description={t("archive.metaDescription")}
 >
   <header class="page-hero">
     <div class="container">
-      <nav class="breadcrumb" aria-label="Breadcrumb">
-        <a href="/">Home</a>
+      <nav class="breadcrumb" aria-label={t("nav.breadcrumb")}>
+        <a href={link("/")}>{t("nav.home")}</a>
         <span class="sep" aria-hidden="true">/</span>
-        <a href="/updates">Stories</a>
+        <a href={link("/updates")}>{t("nav.stories")}</a>
         <span class="sep" aria-hidden="true">/</span>
-        <span aria-current="page">Archive</span>
+        <span aria-current="page">{t("archive.crumb")}</span>
       </nav>
-      <p class="kicker">From the Centre</p>
-      <h1>Articles &amp; updates</h1>
-      <p>Stories, announcements and celebrations published by the Al-Jannah Centre team.</p>
+      <p class="kicker">{t("updates.kicker")}</p>
+      <h1>{t("archive.title")}</h1>
+      <p>{t("archive.text")}</p>
       {isLoggedIn && (
         <div class="page-hero-actions">
           <a class="button button-primary" href="/_emdash/admin">Publish an update</a>
@@ -53,7 +55,7 @@ const isLoggedIn = Boolean(Astro.locals.user);
             excerpt={post.data.excerpt}
             content={post.data.content}
             featuredImage={post.data.featured_image}
-            href={"/posts/" + post.id}
+            href={link("/posts/" + post.id)}
             date={post.data.publishedAt}
             bylines={post.data.bylines}
           />

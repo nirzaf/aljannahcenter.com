@@ -3,38 +3,26 @@ import { ArrowRight, BookOpen, HeartHandshake, Palette, Sparkles } from "lucide-
 import BrandIcon from "../BrandIcon.astro";
 import SectionHeading from "../SectionHeading.astro";
 import { centre } from "../../data/centre";
+import { getLang, localePath, useTranslations } from "../../i18n";
+
+const lang = getLang(Astro);
+const t = useTranslations(lang);
 
 const focusAreas = [
-  {
-    icon: BookOpen,
-    title: "Education",
-    text: "Learning that meets each child where they are, building confidence one step at a time.",
-  },
-  {
-    icon: HeartHandshake,
-    title: "Therapy",
-    text: "Support that helps children grow in communication, movement and independence.",
-  },
-  {
-    icon: Palette,
-    title: "Vocational skills",
-    text: "Art, craft and practical skills that turn talents into pride and possibility.",
-  },
-  {
-    icon: Sparkles,
-    title: "Faith & values",
-    text: "Celebrating every child’s abilities, faith and values together with their families.",
-  },
+  { icon: BookOpen, title: t("programmes.education.title"), text: t("programmes.education.text") },
+  { icon: HeartHandshake, title: t("programmes.therapy.title"), text: t("programmes.therapy.text") },
+  { icon: Palette, title: t("programmes.vocational.title"), text: t("programmes.vocational.text") },
+  { icon: Sparkles, title: t("programmes.faith.title"), text: t("programmes.faith.text") },
 ];
 ---
 
 <section class="section" id="programmes" aria-labelledby="programmes-title">
   <div class="container" data-reveal>
     <SectionHeading
-      kicker="What we do"
+      kicker={t("programmes.kicker")}
       titleId="programmes-title"
-      title="Celebrating abilities, talents, faiths and values."
-      description="The Centre’s work spans education, therapy and vocational training for children with special needs."
+      title={t("programmes.title")}
+      description={t("programmes.description")}
     />
     <ul class="program-grid">
       {focusAreas.map(({ icon: Icon, title, text }) => (
@@ -46,13 +34,13 @@ const focusAreas = [
       ))}
     </ul>
     <div class="program-footer">
-      <p>For programme, admission and visit enquiries, please speak with the Centre directly.</p>
+      <p>{t("programmes.enquiries")}</p>
       <div class="program-footer-links">
         <a class="button button-outline" href={centre.whatsapp.href} target="_blank" rel="noopener noreferrer">
-          <BrandIcon name="whatsapp" size={18} /> Ask on WhatsApp
+          <BrandIcon name="whatsapp" size={18} /> {t("programmes.askWhatsapp")}
         </a>
-        <a class="text-link" href="/pages/about">
-          About the Centre <ArrowRight size={16} aria-hidden="true" />
+        <a class="text-link" href={localePath(lang, "/pages/about")}>
+          {t("programmes.aboutCentre")} <ArrowRight size={16} aria-hidden="true" />
         </a>
       </div>
     </div>

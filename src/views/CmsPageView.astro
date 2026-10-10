@@ -1,0 +1,51 @@
+---
+import { PortableText } from "emdash/ui";
+import { HandHeart } from "lucide-react";
+import Base from "../layouts/Base.astro";
+import BrandIcon from "../components/BrandIcon.astro";
+import { centre } from "../data/centre";
+import { getLang, localePath, useTranslations } from "../i18n";
+
+interface Props {
+  /** The CMS entry, or null to show the built-in copy. */
+  page: any;
+  /** Built-in copy for pages linked from the navigation before the CMS is seeded. */
+  fallback?: { title: string; paragraphs: string[] } | null;
+  slug: string;
+}
+
+// Shared by /pages/[slug] and the language routes, which load the entry first.
+const { page, fallback, slug } = Astro.props;
+const lang = getLang(Astro);
+const t = useTranslations(lang);
+const title = page ? page.data.title : fallback!.title;
+---
+
+<Base
+  title={title}
+  description={t("page.metaDescription")}
+  content={page ? { collection: "pages", id: page.data.id, slug } : undefined}
+>
+  <header class="page-hero">
+    <div class="container">
+      <nav class="breadcrumb" aria-label={t("nav.breadcrumb")}>
+        <a href={localePath(lang, "/")}>{t("nav.home")}</a>
+        <span class="sep" aria-hidden="true">/</span>
+        <span aria-current="page">{title}</span>
+      </nav>
+      <p class="kicker">{t("page.kicker")}</p>
+      <h1>{title}</h1>
+    </div>
+  </header>
+  <div class="container page-layout">
+    <article class="prose">
+      {page ? <PortableText value={page.data.content ?? []} /> : fallback!.paragraphs.map((text) => <p>{text}</p>)}
+    </article>
+    <aside class="page-cta" aria-label={t("page.ctaLabel")}>
+      <h2>{t("page.ctaTitle")}</h2>
+      <p>{t("page.ctaText")}</p>
+      <a class="button button-gold" href={centre.whatsapp.href} target="_blank" rel="noopener noreferrer"><BrandIcon name="whatsapp" size={18} /> {t("page.ctaWhatsapp")}</a>
+      <a class="button button-ghost-light" href={localePath(lang, "/#support")}><HandHeart size={17} aria-hidden="true" /> {t("page.ctaSupport")}</a>
+    </aside>
+  </div>
+</Base>

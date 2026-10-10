@@ -1,29 +1,44 @@
 ---
 import Base from "../layouts/Base.astro";
 import { PhotoGallery } from "../components/PhotoGallery";
+import { getLang, localePath, useTranslations } from "../i18n";
+
+const lang = getLang(Astro);
+const t = useTranslations(lang);
+const link = (path: string) => localePath(lang, path);
+const labels = {
+  section: t("gallery.sectionLabel"),
+  albums: t("gallery.albums"),
+  albumCentre: t("gallery.album.centre"),
+  albumInstagram: t("gallery.album.instagram"),
+  sourceFacebook: t("gallery.source.facebook"),
+  sourceInstagram: t("gallery.source.instagram"),
+  showing: t("gallery.showing"),
+  showMore: t("gallery.showMore"),
+  viewLarger: t("gallery.viewLarger"),
+  viewer: t("gallery.viewer"),
+  viewPost: t("gallery.viewPost"),
+  close: t("gallery.close"),
+  previous: t("gallery.previous"),
+  next: t("gallery.next"),
+};
 ---
 
-<Base
-  title="Gallery"
-  description="Photos from daily life at Al-Jannah Centre — classroom creativity, celebrations and community days in Kochchikade, Negombo."
->
+<Base title={t("gallery.title")} description={t("gallery.metaDescription")}>
   <header class="page-hero">
     <div class="container">
-      <nav class="breadcrumb" aria-label="Breadcrumb">
-        <a href="/">Home</a>
+      <nav class="breadcrumb" aria-label={t("nav.breadcrumb")}>
+        <a href={link("/")}>{t("nav.home")}</a>
         <span class="sep" aria-hidden="true">/</span>
-        <span aria-current="page">Gallery</span>
+        <span aria-current="page">{t("gallery.title")}</span>
       </nav>
-      <p class="kicker">Life at Al-Jannah</p>
-      <h1>Gallery</h1>
-      <p>
-        Classroom creativity, celebrations and community days, shared from the Centre’s
-        official channels.
-      </p>
+      <p class="kicker">{t("gallery.kicker")}</p>
+      <h1>{t("gallery.title")}</h1>
+      <p>{t("gallery.description")}</p>
     </div>
   </header>
 
   <div class="page-body">
-    <PhotoGallery client:visible />
+    <PhotoGallery client:visible labels={labels} />
   </div>
 </Base>

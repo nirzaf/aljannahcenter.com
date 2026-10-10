@@ -1,23 +1,37 @@
 ---
 import { ArrowRight } from "lucide-react";
 import { centre } from "../../data/centre";
+import { getLang, useTranslations } from "../../i18n";
 import HeroSlides from "./HeroSlides";
+
+const t = useTranslations(getLang(Astro));
+const slides = (["artists", "creativity", "community", "giving"] as const).map((image, index) => {
+  const n = (index + 1) as 1 | 2 | 3 | 4;
+  return { image, alt: t(`slides.${n}.alt`), caption: t(`slides.${n}.caption`) };
+});
+const slideLabels = {
+  region: t("slides.label"),
+  previous: t("slides.previous"),
+  next: t("slides.next"),
+  pause: t("slides.pause"),
+  play: t("slides.play"),
+  choose: t("slides.choose"),
+  show: t("slides.show"),
+  position: t("slides.position"),
+};
 ---
 
 <section class="hero" id="top">
   <div class="container hero-inner">
     <div class="hero-copy">
-      <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true" /> Supporting children since {centre.since}</p>
-      <h1>Every child deserves the space to learn, grow and <em>shine</em>.</h1>
-      <p class="hero-lede">
-        Al-Jannah Centre supports children with special needs and skills through education,
-        therapy, vocational development and a caring community in Kochchikade, Negombo.
-      </p>
+      <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true" /> {t("hero.eyebrow", { year: centre.since })}</p>
+      <h1>{t("hero.titleBefore")}<em>{t("hero.titleEm")}</em>{t("hero.titleAfter")}</h1>
+      <p class="hero-lede">{t("hero.lede")}</p>
       <div class="hero-actions">
         <a class="button button-primary button-lg" href="#programmes">
-          Explore our programmes <ArrowRight size={18} aria-hidden="true" />
+          {t("hero.ctaProgrammes")} <ArrowRight size={18} aria-hidden="true" />
         </a>
-        <a class="button button-gold button-lg" href="#support">Support Al-Jannah</a>
+        <a class="button button-gold button-lg" href="#support">{t("hero.ctaSupport")}</a>
       </div>
       <a
         class="text-link hero-whatsapp"
@@ -25,10 +39,10 @@ import HeroSlides from "./HeroSlides";
         target="_blank"
         rel="noopener noreferrer"
       >
-        Talk to us on WhatsApp <ArrowRight size={16} aria-hidden="true" />
+        {t("hero.whatsapp")} <ArrowRight size={16} aria-hidden="true" />
       </a>
     </div>
 
-    <HeroSlides client:load />
+    <HeroSlides client:load slides={slides} labels={slideLabels} />
   </div>
 </section>

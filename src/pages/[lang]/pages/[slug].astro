@@ -1,0 +1,36 @@
+---
+import { decodeSlug } from "emdash";
+import CmsPageView from "../../../views/CmsPageView.astro";
+import { getLang, localePath, useTranslations, translatedLangs } from "../../../i18n";
+import { getLocalizedEntry } from "../../../i18n/content";
+
+export const prerender = false;
+
+// Only /ta/… and /si/… are language routes; anything else is a missing page.
+if (!translatedLangs.includes(Astro.params.lang as any)) return Astro.redirect("/404");
+
+const lang = getLang(Astro);
+const t = useTranslations(lang);
+const slug = Astro.params.slug ? decodeSlug(Astro.params.slug) : null;
+if (!slug) return Astro.redirect(localePath(lang, "/404"));
+
+// The About page is linked from the main navigation, so keep a built-in copy
+// for databases that have not been seeded yet and for untranslated languages.
+const fallbackPages: Record<string, { title: string; paragraphs: string[] }> = {
+  about: { title: t("about.title"), paragraphs: [t("about.p1"), t("about.p2")] },
+};
+
+let page: any = null;
+try {
+  const result = await getLocalizedEntry("pages", slug, lang);
+  // Prefer the built-in translation over an English CMS page.
+  page = result.translated || !fallbackPages[slug] ? result.entry : null;
+  if (page && Astro.cache?.enabled) Astro.cache.set(result.cacheHint);
+} catch {
+  // Fall through to the built-in copy while the CMS database is initialized.
+}
+const fallback = page ? null : fallbackPages[slug];
+if (!page && !fallback) return Astro.redirect(localePath(lang, "/404"));
+---
+
+<CmsPageView page={page} fallback={fallback} slug={slug} />

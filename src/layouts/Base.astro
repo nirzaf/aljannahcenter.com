@@ -11,6 +11,8 @@ import { createPublicPageContext } from "emdash/page";
 import { HandHeart, Mail, MapPin, Menu, Phone, Search, X } from "lucide-react";
 import BrandIcon from "../components/BrandIcon.astro";
 import { centre } from "../data/centre";
+import { defaultLang, getLang, languages, localePath, stripLang, useTranslations } from "../i18n";
+import type { Lang } from "../i18n";
 import "../styles/site.css";
 
 interface Props {
@@ -43,15 +45,20 @@ const {
   content,
 } = Astro.props;
 
-let siteTitle = "Al-Jannah Centre";
-let siteTagline = "A place where every child can shine.";
+const lang = getLang(Astro);
+const t = useTranslations(lang);
+const link = (path: string) => localePath(lang, path);
+const isDefaultLang = lang === defaultLang;
+
+let siteTitle = t("site.name");
+let siteTagline = t("site.tagline");
 let primaryItems: NavItem[] = [
-  { label: "About", url: "/pages/about" },
-  { label: "Programmes", url: "/#programmes" },
-  { label: "Impact", url: "/#impact" },
-  { label: "Stories", url: "/updates" },
-  { label: "Gallery", url: "/gallery" },
-  { label: "Contact", url: "/#contact" },
+  { label: t("nav.about"), url: link("/pages/about") },
+  { label: t("nav.programmes"), url: link("/#programmes") },
+  { label: t("nav.impact"), url: link("/#impact") },
+  { label: t("nav.stories"), url: link("/updates") },
+  { label: t("nav.gallery"), url: link("/gallery") },
+  { label: t("nav.contact"), url: link("/#contact") },
 ];
 let socialItems: NavItem[] = [
   { label: "Facebook", url: "https://www.facebook.com/aljannahcentre/", target: "_blank" },
@@ -59,15 +66,18 @@ let socialItems: NavItem[] = [
 ];
 
 try {
-  const settings = await getSiteSettings();
-  siteTitle = settings.title || siteTitle;
-  siteTagline = settings.tagline || siteTagline;
+  // CMS settings and menus are written in English; other languages use the translated defaults.
+  if (isDefaultLang) {
+    const settings = await getSiteSettings();
+    siteTitle = settings.title || siteTitle;
+    siteTagline = settings.tagline || siteTagline;
+  }
 } catch {
   // The public shell remains useful while a new D1 database is being initialized.
 }
 
 try {
-  const menu = await getMenu("primary");
+  const menu = isDefaultLang ? await getMenu("primary") : null;
   if (menu?.items?.length) {
     const items = menu.items as NavItem[];
     // Upgrade the original seeded navigation without replacing custom CMS menus.
@@ -97,7 +107,7 @@ socialItems = socialItems.filter((item) => {
   }
 });
 
-const currentPath = Astro.url.pathname;
+const currentPath = stripLang(Astro.url.pathname);
 const fullTitle = title === siteTitle || title.includes(siteTitle)
   ? title
   : title + " | " + siteTitle;
@@ -119,7 +129,19 @@ const pageContext = createPublicPageContext({
 const isLoggedIn = Boolean(Astro.locals.user);
 const year = new Date().getFullYear();
 
+// The same page in every language, for the switcher and search engines.
+const alternates = (Object.keys(languages) as Lang[]).map((code) => ({
+  code,
+  label: languages[code].label,
+  href: localePath(code, currentPath + Astro.url.search),
+}));
+const fontHref: Partial<Record<Lang, string>> = {
+  ta: "https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@400..800&family=Noto+Serif+Tamil:wght@400..600&display=swap",
+  si: "https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400..800&family=Noto+Serif+Sinhala:wght@400..600&display=swap",
+};
+
 function isActive(url: string) {
+  url = stripLang(url);
   const path = url.split("#")[0];
   if (url.includes("#")) return false;
   return path === "/" ? currentPath === "/" : currentPath === path || currentPath.startsWith(path + "/");
@@ -127,7 +149,7 @@ function isActive(url: string) {
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -141,16 +163,25 @@ function isActive(url: string) {
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..600&family=Nunito+Sans:opsz,wght@6..12,400..800&display=swap"
     />
+    {fontHref[lang] && <link rel="stylesheet" href={fontHref[lang]} />}
+    {alternates.map((item) => (
+      <link rel="alternate" hreflang={item.code} href={new URL(item.href, Astro.url).toString()} />
+    ))}
     <EmDashHead page={pageContext} />
   </head>
   <body>
     <EmDashBodyStart page={pageContext} />
-    <a class="skip-link" href="#main-content">Skip to content</a>
+    <a class="skip-link" href="#main-content">{t("common.skip")}</a>
 
     <div class="utility-strip">
       <div class="utility-strip-inner">
-        <p><MapPin size={14} aria-hidden="true" /> Kochchikade, Negombo, Sri Lanka</p>
+        <p><MapPin size={14} aria-hidden="true" /> {t("site.location")}</p>
         <div class="utility-strip-links">
+          <nav class="lang-switch" aria-label={t("site.language")}>
+            {alternates.map((item) => (
+            <a href={item.href} lang={item.code} hreflang={item.code} aria-current={item.code === lang ? "true" : undefined}>{item.label}</a>
+          ))}
+          </nav>
           <a href={centre.phone.href}><Phone size={14} aria-hidden="true" /> {centre.phone.label}</a>
           <a href={centre.whatsapp.href} target="_blank" rel="noopener noreferrer"><BrandIcon name="whatsapp" size={14} /> WhatsApp</a>
         </div>
@@ -159,14 +190,14 @@ function isActive(url: string) {
 
     <header class="site-header" data-site-header>
       <div class="site-header-inner">
-        <a class="brand" href="/" aria-label={siteTitle + " home"}>
+        <a class="brand" href={link("/")} aria-label={t("nav.homeLabel")}>
           <picture class="brand-image">
             <source media="(min-width: 640px)" srcset="/ajc-wordmark.webp" width="1200" height="184" />
             <img class="brand-logo" src="/ajc-crest.webp" alt="Al-Jannah Centre" width="256" height="272" />
           </picture>
         </a>
 
-        <nav class="primary-nav" aria-label="Primary navigation">
+        <nav class="primary-nav" aria-label={t("nav.primary")}>
           {primaryItems.map((item) => (
             <a
               href={item.url}
@@ -187,23 +218,29 @@ function isActive(url: string) {
               data-search-toggle
             >
               <Search size={20} aria-hidden="true" />
-              <span class="sr-only">Search</span>
+              <span class="sr-only">{t("common.search")}</span>
             </button>
-            <div class="search-pop" id="header-search-pop" data-search-pop hidden>
+            <div
+              class="search-pop"
+              id="header-search-pop"
+              data-search-pop
+              style={`--search-loading: "${t("search.loading")}"; --search-empty: "${t("search.noResults")}";`}
+              hidden
+            >
               <LiveSearch
-                placeholder="Search articles and pages"
+                placeholder={t("common.searchPlaceholder")}
                 inputClass="header-search-input"
                 resultsClass="header-search-results"
                 resultClass="header-search-result"
                 collections={["posts", "pages"]}
-                searchPage="/search"
-                routeMap={{ posts: "/posts/:path", pages: "/pages/:path" }}
+                searchPage={link("/search")}
+                routeMap={{ posts: link("/posts/:path"), pages: link("/pages/:path") }}
               />
             </div>
           </div>
-          {isLoggedIn && <a class="header-admin" href="/admin">Staff desk</a>}
-          <a class="button button-gold header-donate" href="/#support">
-            <HandHeart size={18} aria-hidden="true" /> <span>Support Us</span>
+          {isLoggedIn && <a class="header-admin" href="/admin">{t("common.staffDesk")}</a>}
+          <a class="button button-gold header-donate" href={link("/#support")}>
+            <HandHeart size={18} aria-hidden="true" /> <span>{t("common.supportUs")}</span>
           </a>
           <button
             class="menu-toggle"
@@ -214,22 +251,27 @@ function isActive(url: string) {
           >
             <Menu size={22} className="menu-icon-open" aria-hidden="true" />
             <X size={22} className="menu-icon-close" aria-hidden="true" />
-            <span class="sr-only">Menu</span>
+            <span class="sr-only">{t("common.menu")}</span>
           </button>
         </div>
       </div>
 
       <div class="mobile-menu" id="mobile-menu" data-mobile-menu hidden>
-        <nav aria-label="Mobile navigation">
+        <nav class="lang-switch lang-switch-menu" aria-label={t("site.language")}>
+          {alternates.map((item) => (
+            <a href={item.href} lang={item.code} hreflang={item.code} aria-current={item.code === lang ? "true" : undefined}>{item.label}</a>
+          ))}
+        </nav>
+        <nav class="mobile-menu-links" aria-label={t("nav.mobile")}>
           {primaryItems.map((item) => (
             <a href={item.url} aria-current={isActive(item.url) ? "page" : undefined}>{item.label}</a>
           ))}
-          {isLoggedIn && <a href="/admin">Staff desk</a>}
+          {isLoggedIn && <a href="/admin">{t("common.staffDesk")}</a>}
         </nav>
-        <form class="mobile-search" method="get" action="/search" role="search">
-          <label class="sr-only" for="mobile-search-input">Search articles and pages</label>
+        <form class="mobile-search" method="get" action={link("/search")} role="search">
+          <label class="sr-only" for="mobile-search-input">{t("common.searchPlaceholder")}</label>
           <Search size={18} aria-hidden="true" />
-          <input id="mobile-search-input" type="search" name="q" placeholder="Search articles and pages" />
+          <input id="mobile-search-input" type="search" name="q" placeholder={t("common.searchPlaceholder")} />
         </form>
         <div class="mobile-menu-contact">
           <a href={centre.phone.href}><Phone size={18} aria-hidden="true" /> {centre.phone.label}</a>
@@ -250,10 +292,10 @@ function isActive(url: string) {
     <footer class="site-footer">
       <div class="container footer-grid">
         <div class="footer-brand">
-          <a class="brand brand-light" href="/" aria-label={siteTitle + " home"}>
+          <a class="brand brand-light" href={link("/")} aria-label={t("nav.homeLabel")}>
             <img class="footer-logo" src="/ajc-wordmark.webp" alt="Al-Jannah Centre" width="1200" height="184" loading="lazy" />
           </a>
-          <p>{siteTagline} {centre.tagline}, serving families in Kochchikade and Negombo since {centre.since}.</p>
+          <p>{siteTagline} {t("footer.blurb", { year: centre.since })}</p>
           <div class="footer-social">
             {socialItems.map((item) => (
               <a href={item.url} target="_blank" rel="noopener noreferrer" aria-label={item.label}><BrandIcon name={item.label} /></a>
@@ -261,14 +303,14 @@ function isActive(url: string) {
           </div>
         </div>
         <div>
-          <h2 class="footer-title">Explore</h2>
+          <h2 class="footer-title">{t("footer.explore")}</h2>
           <ul class="footer-links">
             {primaryItems.map((item) => <li><a href={item.url}>{item.label}</a></li>)}
-            <li><a href="/posts">Article archive</a></li>
+            <li><a href={link("/posts")}>{t("footer.archive")}</a></li>
           </ul>
         </div>
         <div>
-          <h2 class="footer-title">Contact</h2>
+          <h2 class="footer-title">{t("footer.contact")}</h2>
           <ul class="footer-links footer-contact">
             <li><a href={centre.phone.href}><Phone size={16} aria-hidden="true" /> {centre.phone.label}</a></li>
             <li><a href={centre.whatsapp.href} target="_blank" rel="noopener noreferrer"><BrandIcon name="whatsapp" size={16} /> {centre.whatsapp.label}</a></li>
@@ -278,18 +320,23 @@ function isActive(url: string) {
         </div>
       </div>
       <div class="container footer-bottom">
-        <p>© {year} {siteTitle}. Give hope. Change a life.</p>
+        <p>© {year} {siteTitle}. {t("footer.motto")}</p>
+        <nav class="lang-switch lang-switch-footer" aria-label={t("site.language")}>
+          {alternates.map((item) => (
+            <a href={item.href} lang={item.code} hreflang={item.code} aria-current={item.code === lang ? "true" : undefined}>{item.label}</a>
+          ))}
+        </nav>
         <div>
           <a href="/rss.xml">RSS</a>
-          <a href="/admin">Staff sign in</a>
+          <a href="/admin">{t("footer.staffSignIn")}</a>
         </div>
       </div>
       <div class="footer-widget"><WidgetArea name="footer" /></div>
     </footer>
 
-    <nav class="action-bar" aria-label="Quick actions">
+    <nav class="action-bar" aria-label={t("common.quickActions")}>
       <a href={centre.whatsapp.href} target="_blank" rel="noopener noreferrer"><BrandIcon name="whatsapp" /><span>WhatsApp</span></a>
-      <a class="action-bar-primary" href="/#support"><HandHeart size={20} aria-hidden="true" /><span>Support Us</span></a>
+      <a class="action-bar-primary" href={link("/#support")}><HandHeart size={20} aria-hidden="true" /><span>{t("common.supportUs")}</span></a>
     </nav>
 
     <EmDashBodyEnd page={pageContext} />
@@ -398,14 +445,14 @@ function isActive(url: string) {
           field.remove();
           if (!copied) {
             const label = button.querySelector("[data-copy-label]");
-            if (label) label.textContent = "Try again";
+            if (label) label.textContent = button.dataset.copyRetry ?? "Try again";
             return;
           }
         }
         const label = button.querySelector("[data-copy-label]");
         const original = label?.textContent;
         button.classList.add("is-copied");
-        if (label) label.textContent = "Copied";
+        if (label) label.textContent = button.dataset.copyDone ?? "Copied";
         window.setTimeout(() => {
           button.classList.remove("is-copied");
           if (label && original) label.textContent = original;

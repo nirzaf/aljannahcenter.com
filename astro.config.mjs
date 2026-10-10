@@ -8,6 +8,12 @@ import emdash from "emdash/astro";
 export default defineConfig({
   site: "https://aljannahcentre.com",
   output: "server",
+  // English at the root, Tamil under /ta and Sinhala under /si.
+  i18n: {
+    defaultLocale: "en",
+    locales: ["en", "ta", "si"],
+    routing: { prefixDefaultLocale: false },
+  },
   adapter: cloudflare({
     imageService: "passthrough",
     // The adapter must inject the R2 bucket object into the session driver.

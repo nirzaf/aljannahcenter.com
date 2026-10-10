@@ -2,8 +2,12 @@
 import { search } from "emdash";
 import { Search } from "lucide-react";
 import Base from "../layouts/Base.astro";
+import { getLang, localePath, useTranslations } from "../i18n";
 
 export const prerender = false;
+const lang = getLang(Astro);
+const t = useTranslations(lang);
+const link = (path: string) => localePath(lang, path);
 const query = Astro.url.searchParams.get("q")?.trim() || "";
 let results: any[] = [];
 
@@ -18,18 +22,18 @@ if (query) {
 ---
 
 <Base
-  title={query ? "Search: " + query : "Search"}
-  description="Search Al-Jannah Centre articles and pages."
+  title={query ? t("common.search") + ": " + query : t("common.search")}
+  description={t("search.metaDescription")}
 >
   <header class="page-hero">
     <div class="container">
-      <p class="kicker">Find a story</p>
-      <h1>Search</h1>
-      <form method="get" action="/search" class="search-form" role="search">
-        <label class="sr-only" for="site-search">Search articles and pages</label>
+      <p class="kicker">{t("search.kicker")}</p>
+      <h1>{t("common.search")}</h1>
+      <form method="get" action={link("/search")} class="search-form" role="search">
+        <label class="sr-only" for="site-search">{t("common.searchPlaceholder")}</label>
         <div>
-          <input id="site-search" type="search" name="q" value={query} placeholder="Try “exhibition”" />
-          <button class="button button-primary" type="submit"><Search size={17} aria-hidden="true" /> Search</button>
+          <input id="site-search" type="search" name="q" value={query} placeholder={t("search.try")} />
+          <button class="button button-primary" type="submit"><Search size={17} aria-hidden="true" /> {t("common.search")}</button>
         </div>
       </form>
     </div>
@@ -38,7 +42,7 @@ if (query) {
   <div class="container page-body">
     {query && (
       <p class="search-summary" aria-live="polite">
-        {results.length === 0 ? "No results for “" + query + "”" : results.length + " result" + (results.length === 1 ? "" : "s") + " for “" + query + "”"}
+        {results.length === 0 ? t("search.none", { q: query }) : results.length === 1 ? t("search.one", { q: query }) : t("search.many", { n: results.length, q: query })}
       </p>
     )}
 
@@ -46,16 +50,16 @@ if (query) {
       <ol class="search-results">
         {results.map((result) => (
           <li>
-            <a href={"/" + (result.collection === "pages" ? "pages/" : "posts/") + (result.slug ?? result.id)}>
-              <span class="search-result-type">{result.collection === "pages" ? "Page" : "Article"}</span>
-              <h2>{result.title ?? "Untitled"}</h2>
+            <a href={link("/" + (result.collection === "pages" ? "pages/" : "posts/") + (result.slug ?? result.id))}>
+              <span class="search-result-type">{result.collection === "pages" ? t("search.page") : t("search.article")}</span>
+              <h2>{result.title ?? t("search.untitled")}</h2>
               {result.snippet && <p set:html={result.snippet} />}
             </a>
           </li>
         ))}
       </ol>
     ) : (
-      <p class="search-summary">{query ? "Try a different word, or browse the latest updates." : "Enter a word to search the Centre’s articles and pages."}</p>
+      <p class="search-summary">{query ? t("search.hintRetry") : t("search.hintEmpty")}</p>
     )}
   </div>
 </Base>

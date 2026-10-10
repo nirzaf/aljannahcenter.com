@@ -3,30 +3,33 @@ import { ArrowUpRight } from "lucide-react";
 import BrandIcon from "./BrandIcon.astro";
 import { socialProfiles } from "../data/centre";
 import TikTokProfile from "./TikTokProfile.astro";
+import { getLang, useTranslations } from "../i18n";
+
+const t = useTranslations(getLang(Astro));
 
 const highlights = [
   {
     platform: "Facebook",
-    label: "Latest public highlight",
-    title: "Rooted in compassion, growing in excellence.",
-    description: "The 8th-anniversary celebration brings together the children, families and supporters who make the Centre special.",
+    label: t("highlights.facebook.label"),
+    title: t("highlights.facebook.title"),
+    description: t("highlights.facebook.description"),
     image: "/social/facebook-anniversary-2026.jpg",
     alt: "Al-Jannah Centre 8th anniversary celebration graphic with children and families",
     href: "https://www.facebook.com/aljannahcentre/",
-    source: "Official Facebook page",
+    source: t("highlights.facebook.source"),
     width: 960,
     height: 440,
     fit: "cover",
   },
   {
     platform: "Instagram",
-    label: "From the feed",
-    title: "La Madrassah Al Jannah",
-    description: "Featuring Dali Misha Touré and the Centre’s message that Al-Jannah is more than a madrassah: it is a place of life.",
+    label: t("highlights.instagram.label"),
+    title: t("highlights.instagram.title"),
+    description: t("highlights.instagram.description"),
     image: "/social/instagram-madrassah-dali-misha.jpg",
     alt: "La Madrassah Al Jannah graphic from the official Al-Jannah Centre Instagram post",
     href: "https://www.instagram.com/p/CyTK17koyoX/",
-    source: "Official Instagram post",
+    source: t("highlights.instagram.source"),
     width: 640,
     height: 640,
     fit: "contain",
@@ -38,10 +41,10 @@ const highlights = [
   <div class="container">
     <div class="section-heading">
       <div>
-        <p class="kicker">Stay connected</p>
-        <h2 id="social-highlights-title">Follow along with the Centre</h2>
+        <p class="kicker">{t("highlights.kicker")}</p>
+        <h2 id="social-highlights-title">{t("highlights.title")}</h2>
       </div>
-      <p>Daily moments, announcements and celebrations are shared first on the Centre’s official channels.</p>
+      <p>{t("highlights.description")}</p>
     </div>
 
     <ul class="profile-row">

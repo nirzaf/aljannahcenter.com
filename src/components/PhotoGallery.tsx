@@ -32,7 +32,33 @@ const albums = [
 
 const batchSize = 12;
 
-export function PhotoGallery() {
+export type GalleryLabels = {
+  section: string;
+  albums: string;
+  albumCentre: string;
+  albumInstagram: string;
+  sourceFacebook: string;
+  sourceInstagram: string;
+  /** Template with {shown} and {total}. */
+  showing: string;
+  /** Template with {n}. */
+  showMore: string;
+  viewLarger: string;
+  viewer: string;
+  viewPost: string;
+  close: string;
+  previous: string;
+  next: string;
+};
+
+const fill = (template: string, values: Record<string, string | number>) =>
+  Object.entries(values).reduce((text, [name, value]) => text.replaceAll(`{${name}}`, String(value)), template);
+
+export function PhotoGallery({ labels }: { labels: GalleryLabels }) {
+  const albumLabels: Record<string, { label: string; source: string }> = {
+    centre: { label: labels.albumCentre, source: labels.sourceFacebook },
+    instagram: { label: labels.albumInstagram, source: labels.sourceInstagram },
+  };
   const [albumIndex, setAlbumIndex] = useState(0);
   const [visibleCount, setVisibleCount] = useState(batchSize);
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -76,10 +102,10 @@ export function PhotoGallery() {
   }
 
   return (
-    <section className="gallery-section" id="gallery" aria-label="Photo gallery">
+    <section className="gallery-section" id="gallery" aria-label={labels.section}>
       <div className="container">
         <div className="gallery-toolbar">
-          <div className="gallery-tabs" role="tablist" aria-label="Gallery albums">
+          <div className="gallery-tabs" role="tablist" aria-label={labels.albums}>
             {albums.map((item, index) => (
               <button
                 key={item.key}
@@ -90,12 +116,12 @@ export function PhotoGallery() {
                 aria-controls="gallery-panel"
                 onClick={() => selectAlbum(index)}
               >
-                {item.label} <span>{item.photos.length}</span>
+                {albumLabels[item.key].label} <span>{item.photos.length}</span>
               </button>
             ))}
           </div>
           <a className="text-link" href={album.source.href} target="_blank" rel="noreferrer">
-            {album.source.label} <ArrowUpRight size={16} aria-hidden="true" />
+            {albumLabels[album.key].source} <ArrowUpRight size={16} aria-hidden="true" />
           </a>
         </div>
 
@@ -111,7 +137,7 @@ export function PhotoGallery() {
                 type="button"
                 className="gallery-tile"
                 onClick={() => setOpenIndex(index)}
-                aria-label={"View larger: " + photo.alt}
+                aria-label={labels.viewLarger + ": " + photo.alt}
               >
                 <img
                   src={photo.thumb}
@@ -129,7 +155,7 @@ export function PhotoGallery() {
 
         <div className="gallery-footer">
           <p aria-live="polite">
-            Showing {visiblePhotos.length} of {album.photos.length}
+            {fill(labels.showing, { shown: visiblePhotos.length, total: album.photos.length })}
           </p>
           {remaining > 0 && (
             <button
@@ -137,7 +163,7 @@ export function PhotoGallery() {
               type="button"
               onClick={() => setVisibleCount((count) => Math.min(count + batchSize, album.photos.length))}
             >
-              Show {Math.min(batchSize, remaining)} more
+              {fill(labels.showMore, { n: Math.min(batchSize, remaining) })}
             </button>
           )}
         </div>
@@ -146,7 +172,7 @@ export function PhotoGallery() {
       <dialog
         ref={dialogRef}
         className="lightbox"
-        aria-label="Photo viewer"
+        aria-label={labels.viewer}
         onClose={() => setOpenIndex(null)}
         onClick={(event) => {
           if (event.target === event.currentTarget) setOpenIndex(null);
@@ -170,12 +196,12 @@ export function PhotoGallery() {
               <div>
                 {current.postUrl && (
                   <a href={current.postUrl} target="_blank" rel="noreferrer">
-                    View post <ArrowUpRight size={15} aria-hidden="true" />
+                    {labels.viewPost} <ArrowUpRight size={15} aria-hidden="true" />
                   </a>
                 )}
                 <button type="button" className="lightbox-close" onClick={() => setOpenIndex(null)}>
                   <X size={22} aria-hidden="true" />
-                  <span className="sr-only">Close</span>
+                  <span className="sr-only">{labels.close}</span>
                 </button>
               </div>
             </div>
@@ -196,11 +222,11 @@ export function PhotoGallery() {
             </figure>
             <button type="button" className="lightbox-nav lightbox-prev" onClick={() => step(-1)}>
               <ChevronLeft size={26} aria-hidden="true" />
-              <span className="sr-only">Previous photo</span>
+              <span className="sr-only">{labels.previous}</span>
             </button>
             <button type="button" className="lightbox-nav lightbox-next" onClick={() => step(1)}>
               <ChevronRight size={26} aria-hidden="true" />
-              <span className="sr-only">Next photo</span>
+              <span className="sr-only">{labels.next}</span>
             </button>
           </>
         )}

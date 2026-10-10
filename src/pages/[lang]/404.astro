@@ -1,0 +1,10 @@
+---
+import Page from "../404.astro";
+import { translatedLangs } from "../../i18n";
+
+export const prerender = false;
+
+if (!translatedLangs.includes(Astro.params.lang as any)) return Astro.redirect("/404");
+---
+
+<Page />

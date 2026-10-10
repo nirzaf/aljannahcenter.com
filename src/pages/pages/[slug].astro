@@ -1,64 +1,31 @@
 ---
-import { decodeSlug, getEmDashEntry } from "emdash";
-import { PortableText } from "emdash/ui";
-import { HandHeart } from "lucide-react";
-import Base from "../../layouts/Base.astro";
-import BrandIcon from "../../components/BrandIcon.astro";
-import { centre } from "../../data/centre";
+import { decodeSlug } from "emdash";
+import CmsPageView from "../../views/CmsPageView.astro";
+import { getLang, localePath, useTranslations } from "../../i18n";
+import { getLocalizedEntry } from "../../i18n/content";
 
+const lang = getLang(Astro);
+const t = useTranslations(lang);
 const slug = Astro.params.slug ? decodeSlug(Astro.params.slug) : null;
-if (!slug) return Astro.redirect("/404");
+if (!slug) return Astro.redirect(localePath(lang, "/404"));
 
 // The About page is linked from the main navigation, so keep a built-in copy
-// for databases that have not been seeded yet.
+// for databases that have not been seeded yet and for untranslated languages.
 const fallbackPages: Record<string, { title: string; paragraphs: string[] }> = {
-  about: {
-    title: "About Al-Jannah Centre",
-    paragraphs: [
-      "Al-Jannah Centre welcomes children with special needs and skills. The Centre publicly describes its work across education, therapy and vocational training.",
-      "For programme, admission and visit enquiries, please contact the Centre directly.",
-    ],
-  },
+  about: { title: t("about.title"), paragraphs: [t("about.p1"), t("about.p2")] },
 };
 
 let page: any = null;
 try {
-  const result = await getEmDashEntry("pages", slug);
-  page = result.entry;
+  const result = await getLocalizedEntry("pages", slug, lang);
+  // Prefer the built-in translation over an English CMS page.
+  page = result.translated || !fallbackPages[slug] ? result.entry : null;
   if (page && Astro.cache?.enabled) Astro.cache.set(result.cacheHint);
 } catch {
   // Fall through to the built-in copy while the CMS database is initialized.
 }
 const fallback = page ? null : fallbackPages[slug];
-if (!page && !fallback) return Astro.redirect("/404");
-const title = page ? page.data.title : fallback!.title;
+if (!page && !fallback) return Astro.redirect(localePath(lang, "/404"));
 ---
 
-<Base
-  title={title}
-  description="Learn more about Al-Jannah Centre."
-  content={page ? { collection: "pages", id: page.data.id, slug } : undefined}
->
-  <header class="page-hero">
-    <div class="container">
-      <nav class="breadcrumb" aria-label="Breadcrumb">
-        <a href="/">Home</a>
-        <span class="sep" aria-hidden="true">/</span>
-        <span aria-current="page">{title}</span>
-      </nav>
-      <p class="kicker">The Centre</p>
-      <h1>{title}</h1>
-    </div>
-  </header>
-  <div class="container page-layout">
-    <article class="prose">
-      {page ? <PortableText value={page.data.content ?? []} /> : fallback!.paragraphs.map((text) => <p>{text}</p>)}
-    </article>
-    <aside class="page-cta" aria-label="Get in touch">
-      <h2>Talk with the Centre</h2>
-      <p>For programme, admission and visit enquiries, the team is happy to help.</p>
-      <a class="button button-gold" href={centre.whatsapp.href} target="_blank" rel="noopener noreferrer"><BrandIcon name="whatsapp" size={18} /> Message on WhatsApp</a>
-      <a class="button button-ghost-light" href="/#support"><HandHeart size={17} aria-hidden="true" /> Ways to support</a>
-    </aside>
-  </div>
-</Base>
+<CmsPageView page={page} fallback={fallback} slug={slug} />

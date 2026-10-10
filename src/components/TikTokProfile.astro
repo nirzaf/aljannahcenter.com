@@ -2,6 +2,7 @@
 import { ArrowUpRight } from "lucide-react";
 import BrandIcon from "./BrandIcon.astro";
 import { socialProfiles } from "../data/centre";
+import { getLang, useTranslations } from "../i18n";
 
 interface Props {
   /** Heading level; the homepage uses it as a section title. */
@@ -11,13 +12,14 @@ interface Props {
 }
 
 const { heading: Heading = "h3", showProfiles = false } = Astro.props;
+const t = useTranslations(getLang(Astro));
 ---
 
 <div class="tiktok-profile">
   <div class="tiktok-profile-copy">
-    <p class="kicker">{showProfiles ? "Stay connected" : "From our TikTok"}</p>
-    <Heading class="tiktok-title" id="tiktok-title">Little moments. Big smiles.</Heading>
-    <p>Follow Al-Jannah Centre for videos, photos and everyday moments from our community.</p>
+    <p class="kicker">{showProfiles ? t("follow.kicker") : t("follow.kickerTikTok")}</p>
+    <Heading class="tiktok-title" id="tiktok-title">{t("follow.title")}</Heading>
+    <p>{t("follow.text")}</p>
     {showProfiles ? (
       <ul class="tiktok-profile-links">
         {socialProfiles.map((profile) => (
@@ -31,13 +33,13 @@ const { heading: Heading = "h3", showProfiles = false } = Astro.props;
       </ul>
     ) : (
       <a class="text-link" href="https://www.tiktok.com/@aljannah.centre" target="_blank" rel="noopener noreferrer">
-        Visit @aljannah.centre <ArrowUpRight size={16} aria-hidden="true" />
+        {t("follow.visit")} <ArrowUpRight size={16} aria-hidden="true" />
       </a>
     )}
   </div>
   <div class="tiktok-profile-embed" data-tiktok-profile>
     <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@aljannah.centre" data-unique-id="aljannah.centre" data-embed-type="creator" data-embed-from="oembed" style="max-width: 720px; min-width: 288px;">
-      <section><a target="_blank" rel="noopener noreferrer" href="https://www.tiktok.com/@aljannah.centre?refer=creator_embed">@aljannah.centre on TikTok</a></section>
+      <section><a target="_blank" rel="noopener noreferrer" href="https://www.tiktok.com/@aljannah.centre?refer=creator_embed">{t("follow.onTikTok")}</a></section>
     </blockquote>
   </div>
 </div>

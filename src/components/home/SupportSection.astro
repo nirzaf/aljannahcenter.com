@@ -2,22 +2,21 @@
 import { Copy } from "lucide-react";
 import BrandIcon from "../BrandIcon.astro";
 import { bankAccounts, centre } from "../../data/centre";
+import { getLang, useTranslations } from "../../i18n";
+
+const t = useTranslations(getLang(Astro));
 ---
 
 <section class="support" id="support" aria-labelledby="support-title">
   <div class="container support-inner">
     <div class="support-copy" data-reveal>
-      <p class="kicker kicker-light">Support Al-Jannah</p>
-      <h2 id="support-title">Your support helps make room for possibility.</h2>
-      <p>
-        Every contribution helps create opportunities for children to learn, develop their
-        abilities and take part in meaningful experiences. Please contact the Centre before
-        giving so they can confirm the details with you.
-      </p>
+      <p class="kicker kicker-light">{t("support.kicker")}</p>
+      <h2 id="support-title">{t("support.title")}</h2>
+      <p>{t("support.text")}</p>
       <ul class="give-help">
-        <li>Learning materials and classroom support</li>
-        <li>Therapy, activities and vocational training</li>
-        <li>Care, meals and special celebrations</li>
+        <li>{t("support.help1")}</li>
+        <li>{t("support.help2")}</li>
+        <li>{t("support.help3")}</li>
       </ul>
       <div class="support-actions">
         <a
@@ -26,10 +25,10 @@ import { bankAccounts, centre } from "../../data/centre";
           target="_blank"
           rel="noopener noreferrer"
         >
-          <BrandIcon name="whatsapp" /> Confirm on WhatsApp
+          <BrandIcon name="whatsapp" /> {t("support.confirm")}
         </a>
         <a class="button button-ghost-light" href="/support-poster.webp" target="_blank" rel="noopener">
-          View support poster
+          {t("support.poster")}
         </a>
       </div>
     </div>
@@ -39,25 +38,27 @@ import { bankAccounts, centre } from "../../data/centre";
         <article class="account-card">
           <header class="account-head">
             <span class="account-mark" aria-hidden="true">AJ</span>
-            <div><small>Bank</small><strong>{item.bank}</strong></div>
+            <div><small>{t("support.bank")}</small><strong>{item.bank}</strong></div>
           </header>
           <div class="account-number">
             <div>
-              <small>Account number</small>
+              <small>{t("support.accountNumber")}</small>
               <strong>{item.account}</strong>
             </div>
             <button
               class="copy-button"
               type="button"
               data-copy={item.account.replace(/-/g, "")}
-              aria-label={"Copy " + item.bank + " account number"}
+              data-copy-done={t("support.copied")}
+              data-copy-retry={t("support.tryAgain")}
+              aria-label={t("support.copyLabel", { bank: item.bank })}
             >
-              <Copy size={16} aria-hidden="true" /> <span data-copy-label aria-live="polite">Copy</span>
+              <Copy size={16} aria-hidden="true" /> <span data-copy-label aria-live="polite">{t("support.copy")}</span>
             </button>
           </div>
           <dl>
-            <div><dt>Account name</dt><dd>Al-Jannah Centre</dd></div>
-            <div><dt>Branch</dt><dd>{item.branch}</dd></div>
+            <div><dt>{t("support.accountName")}</dt><dd>Al-Jannah Centre</dd></div>
+            <div><dt>{t("support.branch")}</dt><dd>{item.branch}</dd></div>
             <div><dt>SWIFT</dt><dd>{item.swift}</dd></div>
           </dl>
         </article>

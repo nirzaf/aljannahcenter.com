@@ -1,5 +1,9 @@
 ---
 import SectionHeading from "../SectionHeading.astro";
+import { getLang, localePath, useTranslations } from "../../i18n";
+
+const lang = getLang(Astro);
+const t = useTranslations(lang);
 
 // A curated editorial preview — the full gallery lives on /gallery.
 const previewPhotos = [
@@ -44,18 +48,18 @@ const previewPhotos = [
 <section class="section section-tint" id="gallery" aria-labelledby="gallery-preview-title">
   <div class="container" data-reveal>
     <SectionHeading
-      kicker="Life at Al-Jannah"
+      kicker={t("gallery.kicker")}
       titleId="gallery-preview-title"
-      title="Glimpses from our days."
-      description="Classroom creativity, celebrations and community days — a small selection from the Centre’s photo gallery."
-      link={{ href: "/gallery", label: "View all photos" }}
+      title={t("gallery.previewTitle")}
+      description={t("gallery.previewDescription")}
+      link={{ href: localePath(lang, "/gallery"), label: t("gallery.viewAll") }}
     />
     <div class="bento">
       {previewPhotos.map((photo) => (
         <a
           class={"bento-tile bento-" + photo.area}
-          href="/gallery"
-          aria-label={photo.alt + " — view the gallery"}
+          href={localePath(lang, "/gallery")}
+          aria-label={photo.alt + " — " + t("gallery.viewGallery")}
         >
           <img
             src={photo.src}

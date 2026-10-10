@@ -47,10 +47,25 @@ export interface Post {
   terms?: Record<string, TaxonomyTerm[]>;
 }
 
+export interface Social {
+  id: string;
+  slug: string | null;
+  status: string;
+  url: string;
+  platform: string;
+  caption?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  publishedAt: Date | null;
+  bylines?: ContentBylineCredit[];
+  terms?: Record<string, TaxonomyTerm[]>;
+}
+
 declare module "emdash" {
   interface EmDashCollections {
     impact: Impact;
     pages: Page;
     posts: Post;
+    social: Social;
   }
 }

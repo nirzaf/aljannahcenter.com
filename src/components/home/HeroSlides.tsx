@@ -1,14 +1,24 @@
 import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 
-const slides = [
-  { image: "artists", alt: "Children drawing together with their teacher", caption: "Learning together, every day" },
-  { image: "creativity", alt: "Children sharing a craft activity at Al-Jannah Centre", caption: "Space to create and grow" },
-  { image: "community", alt: "Children and visitors gathered at Al-Jannah Centre", caption: "A community that cares" },
-  { image: "giving", alt: "A child receiving a gift at a Centre event", caption: "Sharing moments of joy" },
-];
+type Slide = { image: string; alt: string; caption: string };
+type Labels = {
+  region: string;
+  previous: string;
+  next: string;
+  pause: string;
+  play: string;
+  choose: string;
+  /** Template with {n} and {caption}. */
+  show: string;
+  /** Template with {n} and {total}. */
+  position: string;
+};
 
-export default function HeroSlides() {
+const fill = (template: string, values: Record<string, string | number>) =>
+  Object.entries(values).reduce((text, [name, value]) => text.replaceAll(`{${name}}`, String(value)), template);
+
+export default function HeroSlides({ slides, labels }: { slides: Slide[]; labels: Labels }) {
   const [active, setActive] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [hovered, setHovered] = useState(false);
@@ -26,31 +36,31 @@ export default function HeroSlides() {
       if (!document.hidden) setActive((index) => (index + 1) % slides.length);
     }, 6000);
     return () => window.clearInterval(timer);
-  }, [playing, hovered, focused, active]);
+  }, [playing, hovered, focused, active, slides.length]);
   const select = (index: number) => {
     setPlaying(false);
     setActive((index + slides.length) % slides.length);
   };
   return (
-    <div className="hero-photo hero-carousel" role="region" aria-roledescription="carousel" aria-label="Life at Al-Jannah Centre"
+    <div className="hero-photo hero-carousel" role="region" aria-roledescription="carousel" aria-label={labels.region}
       onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
       onFocusCapture={() => setFocused(true)} onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false); }}>
       <div className="hero-frames" aria-live={playing ? "off" : "polite"}>
         {slides.map((slide, index) => (
           <figure key={slide.image} className={`hero-frame ${index === active ? "is-active" : ""}`} aria-hidden={index !== active}
-            role="group" aria-roledescription="slide" aria-label={`${index + 1} of ${slides.length}`}>
+            role="group" aria-roledescription="slide" aria-label={fill(labels.position, { n: index + 1, total: slides.length })}>
             <img src={`/hero/${slide.image}.webp`} alt={slide.alt} width="800" height="800" fetchPriority={index === 0 ? "high" : "auto"} loading={index === 0 ? "eager" : "lazy"} decoding="async" />
             <figcaption>{slide.caption}</figcaption>
           </figure>
         ))}
       </div>
-      <div className="hero-progress" aria-label="Choose a slide">
-        {slides.map((slide, index) => <button type="button" key={slide.image} aria-label={`Show slide ${index + 1}: ${slide.caption}`} aria-current={index === active ? "true" : undefined} onClick={() => select(index)}><span /></button>)}
+      <div className="hero-progress" aria-label={labels.choose}>
+        {slides.map((slide, index) => <button type="button" key={slide.image} aria-label={fill(labels.show, { n: index + 1, caption: slide.caption })} aria-current={index === active ? "true" : undefined} onClick={() => select(index)}><span /></button>)}
       </div>
       <div className="hero-controls">
-        <button type="button" aria-label="Previous slide" onClick={() => select(active - 1)}><ChevronLeft size={20} aria-hidden="true" /></button>
-        <button type="button" aria-label={playing ? "Pause slideshow" : "Play slideshow"} onClick={() => setPlaying(!playing)}>{playing ? <Pause size={16} aria-hidden="true" /> : <Play size={16} aria-hidden="true" />}</button>
-        <button type="button" aria-label="Next slide" onClick={() => select(active + 1)}><ChevronRight size={20} aria-hidden="true" /></button>
+        <button type="button" aria-label={labels.previous} onClick={() => select(active - 1)}><ChevronLeft size={20} aria-hidden="true" /></button>
+        <button type="button" aria-label={playing ? labels.pause : labels.play} onClick={() => setPlaying(!playing)}>{playing ? <Pause size={16} aria-hidden="true" /> : <Play size={16} aria-hidden="true" />}</button>
+        <button type="button" aria-label={labels.next} onClick={() => select(active + 1)}><ChevronRight size={20} aria-hidden="true" /></button>
       </div>
     </div>
   );

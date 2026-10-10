@@ -1,5 +1,4 @@
 ---
-import { getEmDashCollection } from "emdash";
 import Base from "../layouts/Base.astro";
 import Hero from "../components/home/Hero.astro";
 import ProgramGrid from "../components/home/ProgramGrid.astro";
@@ -11,14 +10,17 @@ import SectionHeading from "../components/SectionHeading.astro";
 import PostCard from "../components/PostCard.astro";
 import TikTokProfile from "../components/TikTokProfile.astro";
 import SocialFeed from "../components/SocialFeed.astro";
+import { getLang, localePath, useTranslations } from "../i18n";
+import { getLocalizedCollection } from "../i18n/content";
+
+const lang = getLang(Astro);
+const t = useTranslations(lang);
+const link = (path: string) => localePath(lang, path);
 
 let posts: any[] = [];
 let cacheHint: unknown;
 try {
-  const result = await getEmDashCollection("posts", {
-    orderBy: { published_at: "desc" },
-    limit: 3,
-  });
+  const result = await getLocalizedCollection("posts", { orderBy: { published_at: "desc" }, limit: 3 }, lang);
   posts = result.entries;
   cacheHint = result.cacheHint;
 } catch {
@@ -27,7 +29,7 @@ try {
 if (Astro.cache?.enabled && cacheHint) Astro.cache.set(cacheHint);
 ---
 
-<Base title="Al-Jannah Centre" description="Al-Jannah Centre for children with special needs and skills in Kochchikade, Negombo, Sri Lanka.">
+<Base title={t("site.name")} description={t("site.description")}>
   <Hero />
 
   <ProgramGrid />
@@ -38,10 +40,10 @@ if (Astro.cache?.enabled && cacheHint) Astro.cache.set(cacheHint);
     <section class="section" id="articles" aria-labelledby="updates-title">
       <div class="container" data-reveal>
         <SectionHeading
-          kicker="Stories & updates"
+          kicker={t("stories.kicker")}
           titleId="updates-title"
-          title="Life at the Centre, in stories."
-          link={{ href: "/updates", label: "View all stories" }}
+          title={t("stories.title")}
+          link={{ href: link("/updates"), label: t("stories.viewAll") }}
         />
         <div class="post-grid">
           {posts.map((post) => (
@@ -50,7 +52,7 @@ if (Astro.cache?.enabled && cacheHint) Astro.cache.set(cacheHint);
               excerpt={post.data.excerpt}
               content={post.data.content}
               featuredImage={post.data.featured_image}
-              href={"/posts/" + post.id}
+              href={link("/posts/" + post.id)}
               date={post.data.publishedAt}
               bylines={post.data.bylines}
             />
@@ -66,7 +68,7 @@ if (Astro.cache?.enabled && cacheHint) Astro.cache.set(cacheHint);
 
   <ContactSection />
 
-  <SocialFeed limit={3} link={{ href: "/updates#social", label: "See more posts" }} />
+  <SocialFeed limit={3} link={{ href: link("/updates#social"), label: t("feed.seeMore") }} />
 
   <section class="section section-tint" id="follow" aria-labelledby="tiktok-title">
     <div class="container" data-reveal><TikTokProfile heading="h2" showProfiles /></div>

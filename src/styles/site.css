@@ -474,9 +474,9 @@ html.menu-open .site-header {
   to { opacity: 1; transform: none; }
 }
 
-.mobile-menu nav { display: grid; }
+.mobile-menu-links { display: grid; }
 
-.mobile-menu nav a {
+.mobile-menu-links a {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -487,8 +487,8 @@ html.menu-open .site-header {
   font-weight: 500;
 }
 
-.mobile-menu nav a::after { color: var(--gold-deep); content: "→"; font-family: var(--font-body); font-size: 1.1rem; }
-.mobile-menu nav a[aria-current="page"] { color: var(--royal); }
+.mobile-menu-links a::after { color: var(--gold-deep); content: "→"; font-family: var(--font-body); font-size: 1.1rem; }
+.mobile-menu-links a[aria-current="page"] { color: var(--royal); }
 
 .mobile-search {
   display: flex;
@@ -639,6 +639,12 @@ html.menu-open .site-header {
   background: var(--card);
   box-shadow: var(--shadow-lg);
 }
+
+/* The CMS search widget ships English status text; show the page language instead. */
+.emdash-live-search-loading,
+.emdash-live-search-no-results { padding: .75rem; color: var(--muted); font-size: 0; }
+.emdash-live-search-loading::after { content: var(--search-loading, "Searching…"); font-size: .88rem; }
+.emdash-live-search-no-results::after { content: var(--search-empty, "No results found"); font-size: .88rem; }
 
 .header-search-result { display: block; padding: .75rem; border-radius: var(--radius-sm); color: var(--ink); }
 .header-search-result:hover { background: var(--sky); }
@@ -2413,6 +2419,80 @@ html.menu-open .action-bar { display: none; }
 .hero-slideshow .hero-slide-dots button span { width: .5rem; height: .5rem; border-radius: 50%; background: rgb(255 255 255 / .5); }
 .hero-slideshow .hero-slide-dots button[aria-current] span { width: 1.4rem; border-radius: 999px; background: var(--gold); }
 @media (min-width: 1024px) { .hero-slideshow .hero-slides { aspect-ratio: 1 / 1; } }
+
+/* ---------- Language switcher ---------- */
+.lang-switch { display: inline-flex; align-items: center; gap: .2rem; }
+
+.lang-switch a {
+  padding: .15rem .6rem;
+  border-radius: 999px;
+  /* Each name is written in its own script; system fonts cover all three. */
+  font-family: "Nunito Sans", "Noto Sans Tamil", "Noto Sans Sinhala", system-ui, sans-serif;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.utility-strip .lang-switch { margin-right: .5rem; }
+.utility-strip .lang-switch a[aria-current],
+.lang-switch-footer a[aria-current] { background: rgb(255 255 255 / .16); color: #fff; }
+
+.lang-switch-menu { display: grid; grid-template-columns: repeat(3, 1fr); gap: .5rem; }
+
+.lang-switch-menu a {
+  display: grid;
+  place-items: center;
+  min-height: 2.75rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--card);
+  color: var(--ink);
+}
+
+.lang-switch-menu a[aria-current] { border-color: var(--ink); background: var(--ink); color: #fff; }
+.lang-switch-footer { flex-wrap: wrap; }
+
+/* ---------- Tamil and Sinhala typography ----------
+   These scripts are taller and wider than Latin and must not be letter-spaced,
+   so they get their own fonts, looser leading and smaller display sizes. */
+html:lang(ta) {
+  --font-display: "Noto Serif Tamil", "Fraunces", Georgia, serif;
+  --font-body: "Noto Sans Tamil", "Nunito Sans", system-ui, sans-serif;
+}
+
+html:lang(si) {
+  --font-display: "Noto Serif Sinhala", "Fraunces", Georgia, serif;
+  --font-body: "Noto Sans Sinhala", "Nunito Sans", system-ui, sans-serif;
+}
+
+html:is(:lang(ta), :lang(si)) * { letter-spacing: 0 !important; }
+html:is(:lang(ta), :lang(si)) body { line-height: 1.75; }
+
+html:is(:lang(ta), :lang(si)) :is(h1, h2, h3, h4) {
+  line-height: 1.35 !important;
+  overflow-wrap: anywhere;
+}
+
+html:is(:lang(ta), :lang(si)) .hero h1 { max-width: 24ch; font-size: clamp(1.8rem, 7vw, 3rem); }
+html:is(:lang(ta), :lang(si)) .hero h1 em { font-style: normal; white-space: normal; }
+html:is(:lang(ta), :lang(si)) .hero h1 em::after { display: none; }
+
+html:is(:lang(ta), :lang(si)) :is(.section-heading h2, .story-copy h2, .contact-copy h2, .support-copy h2, .tiktok-title) {
+  font-size: clamp(1.5rem, 4.6vw, 2.3rem);
+}
+
+html:is(:lang(ta), :lang(si)) :is(.page-hero h1, .article-header h1, .not-found h1) { font-size: clamp(1.8rem, 6.5vw, 3rem); }
+html:is(:lang(ta), :lang(si)) :is(.program-card h3, .post-card h3, .highlight-copy h3) { font-size: 1.2rem; }
+html:is(:lang(ta), :lang(si)) .mobile-menu-links a { font-size: 1.25rem; }
+html:is(:lang(ta), :lang(si)) .impact-stat dt { font-size: clamp(1.9rem, 5vw, 2.6rem); line-height: 1.3; }
+html:is(:lang(ta), :lang(si)) :is(.kicker, .eyebrow, .footer-title, .card-label) { font-size: .85rem; }
+html:is(:lang(ta), :lang(si)) :is(.button, .text-link, .primary-nav a) { font-weight: 700; }
+html:is(:lang(ta), :lang(si)) .button { line-height: 1.45; }
+
+@media (min-width: 1024px) {
+  html:is(:lang(ta), :lang(si)) .primary-nav a { padding-inline: .55rem; font-size: .88rem; white-space: nowrap; }
+  html:is(:lang(ta), :lang(si)) .header-admin { white-space: nowrap; }
+  html:is(:lang(ta), :lang(si)) .brand-logo { width: 11.5rem; }
+}
 
 /* ---------- Motion preferences ---------- */
 @media (prefers-reduced-motion: reduce) {

@@ -1,15 +1,20 @@
 ---
 import Base from "../layouts/Base.astro";
+import { getLang, localePath, useTranslations } from "../i18n";
+
+const lang = getLang(Astro);
+const t = useTranslations(lang);
+const link = (path: string) => localePath(lang, path);
 ---
 
-<Base title="Page not found">
+<Base title={t("notFound.metaTitle")}>
   <section class="container not-found">
     <p class="kicker">404</p>
-    <h1>That page is not here.</h1>
-    <p>It may have moved. Head back to the homepage or see the latest updates from the Centre.</p>
+    <h1>{t("notFound.title")}</h1>
+    <p>{t("notFound.text")}</p>
     <div class="hero-actions">
-      <a class="button button-primary button-lg" href="/">Back to home</a>
-      <a class="button button-outline button-lg" href="/updates">Latest updates</a>
+      <a class="button button-primary button-lg" href={link("/")}>{t("notFound.home")}</a>
+      <a class="button button-outline button-lg" href={link("/updates")}>{t("notFound.updates")}</a>
     </div>
   </section>
 </Base>

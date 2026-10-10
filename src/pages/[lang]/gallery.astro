@@ -1,0 +1,11 @@
+---
+import Page from "../gallery.astro";
+import { translatedLangs } from "../../i18n";
+
+export const prerender = false;
+
+// Only /ta/… and /si/… are language routes; anything else is a missing page.
+if (!translatedLangs.includes(Astro.params.lang as any)) return Astro.redirect("/404");
+---
+
+<Page />

@@ -1,0 +1,22 @@
+---
+import { decodeSlug } from "emdash";
+import PostView from "../../../views/PostView.astro";
+import { getLang, localePath, translatedLangs } from "../../../i18n";
+import { getLocalizedEntry } from "../../../i18n/content";
+
+export const prerender = false;
+
+// Only /ta/… and /si/… are language routes; anything else is a missing page.
+if (!translatedLangs.includes(Astro.params.lang as any)) return Astro.redirect("/404");
+
+const lang = getLang(Astro);
+const slug = Astro.params.slug ? decodeSlug(Astro.params.slug) : null;
+if (!slug) return Astro.redirect(localePath(lang, "/404"));
+
+// A story without a translation is shown in English.
+const { entry: post, cacheHint } = await getLocalizedEntry("posts", slug, lang);
+if (!post) return Astro.redirect(localePath(lang, "/404"));
+if (Astro.cache?.enabled) Astro.cache.set(cacheHint);
+---
+
+<PostView post={post} slug={slug} />
