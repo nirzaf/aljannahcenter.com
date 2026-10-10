@@ -1434,6 +1434,9 @@ html.menu-open .site-header {
   }
 }
 
+/* Breathing room between the highlight cards and the TikTok block below them. */
+.highlight-grid + .tiktok-profile { margin-top: 3rem; }
+
 .highlight-card {
   display: flex;
   flex-direction: column;

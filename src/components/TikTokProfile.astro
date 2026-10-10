@@ -2,6 +2,8 @@
 import { ArrowUpRight } from "lucide-react";
 import BrandIcon from "./BrandIcon.astro";
 import { socialProfiles } from "../data/centre";
+import { officialSocialPosts } from "../data/social-posts";
+import { parseSocialUrl } from "../utils/social-embed";
 import { getLang, useTranslations } from "../i18n";
 
 interface Props {
@@ -13,6 +15,14 @@ interface Props {
 
 const { heading: Heading = "h3", showProfiles = false } = Astro.props;
 const t = useTranslations(getLang(Astro));
+
+// Two recent TikTok videos in TikTok's own player. (TikTok's profile widget is
+// rate-limited on some networks and then renders an error box.) The newest video
+// is skipped because the social feed beside this block already leads with it.
+const videos = officialSocialPosts
+  .map((url) => parseSocialUrl(url))
+  .filter((embed) => embed?.platform === "tiktok")
+  .slice(1, 3);
 ---
 
 <div class="tiktok-profile">
@@ -37,32 +47,20 @@ const t = useTranslations(getLang(Astro));
       </a>
     )}
   </div>
-  <div class="tiktok-profile-embed" data-tiktok-profile>
-    <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@aljannah.centre" data-unique-id="aljannah.centre" data-embed-type="creator" data-embed-from="oembed" style="max-width: 720px; min-width: 288px;">
-      <section><a target="_blank" rel="noopener noreferrer" href="https://www.tiktok.com/@aljannah.centre?refer=creator_embed">{t("follow.onTikTok")}</a></section>
-    </blockquote>
+  <div class="tiktok-profile-videos">
+    {videos.map((video, index) => (
+      <div class="social-frame social-frame-portrait">
+        <iframe
+          src={video!.src}
+          title={t("feed.frameTitle", { platform: "TikTok" }) + " " + (index + 1)}
+          loading="lazy"
+          allow="encrypted-media; fullscreen; picture-in-picture"
+          referrerpolicy="strict-origin-when-cross-origin"
+        ></iframe>
+      </div>
+    ))}
   </div>
 </div>
-
-<script>
-  const profiles = document.querySelectorAll<HTMLElement>("[data-tiktok-profile]");
-  const loadEmbed = () => {
-    if (document.querySelector('script[src="https://www.tiktok.com/embed.js"]')) return;
-    const script = document.createElement("script");
-    script.src = "https://www.tiktok.com/embed.js";
-    script.async = true;
-    document.body.appendChild(script);
-  };
-  if ("IntersectionObserver" in window) {
-    const observer = new IntersectionObserver((entries) => {
-      if (entries.some((entry) => entry.isIntersecting)) {
-        loadEmbed();
-        observer.disconnect();
-      }
-    }, { rootMargin: "200px" });
-    profiles.forEach((profile) => observer.observe(profile));
-  } else loadEmbed();
-</script>
 
 <style>
   .tiktok-profile { display: grid; gap: 2rem; align-items: center; }
@@ -98,24 +96,16 @@ const t = useTranslations(getLang(Astro));
   .tiktok-profile-links a:hover { border-color: var(--royal); color: var(--royal); transform: translateY(-1px); }
   .tiktok-profile-links a > :global(svg:last-child) { color: #8a98bf; }
 
-  /* A framed slot, so the section still reads as finished before the embed loads. */
-  .tiktok-profile-embed {
+  .tiktok-profile-videos {
     display: grid;
-    place-items: center;
-    min-width: 0;
-    min-height: 16rem;
-    overflow: hidden;
-    padding: 1rem;
-    border: 1px solid var(--line);
-    border-radius: var(--radius-lg);
-    background: var(--card);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: .75rem;
+    width: 100%;
+    max-width: 34rem;
+    margin-inline: auto;
   }
 
-  /* TikTok's player brings its own frame. */
-  .tiktok-profile-embed:has(iframe) { padding: 0; border: 0; background: transparent; }
-
-  .tiktok-embed { width: 100%; margin: 0 auto; border-radius: var(--radius-md); }
-  .tiktok-embed a { color: var(--royal); font-weight: 800; text-decoration: underline; text-underline-offset: .2em; }
+  .tiktok-profile-videos .social-frame { overflow: hidden; border-radius: var(--radius-lg); background: var(--ink); }
 
   @media (min-width: 900px) {
     .tiktok-profile { grid-template-columns: .8fr 1.2fr; gap: 4rem; }
